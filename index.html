@@ -96,11 +96,18 @@ button:hover {
 <script>
 (function() {
     // ========================================================
-    // डोमेन लॉक सुरक्षा: नीचे yourdomain.com की जगह अपनी वेबसाइट का नाम डालें
+    // डोमेन लॉक सुरक्षा: yourdomain.com की जगह अपनी असली वेबसाइट का नाम डालें
     // ========================================================
     var allowedDomain = "yourdomain.com"; 
+    var currentHost = window.location.hostname;
     
-    if (window.location.hostname !== allowedDomain && window.location.hostname !== "www." + allowedDomain) {
+    // यह चेक आपके लोकल कंप्यूटर, localhost और आपकी साइट दोनों को अनुमति देगा
+    if (currentHost !== "" && 
+        currentHost !== "localhost" && 
+        currentHost !== "127.0.0.1" && 
+        currentHost !== allowedDomain && 
+        currentHost !== "www." + allowedDomain) {
+        
         document.body.innerHTML = "<div style='margin-top:100px; font-family:Arial; text-align:center;'><h2 style='color:red;'>अनधिकृत पहुंच (Unauthorized Access)</h2><p>यह एप्लिकेशन इस वेबसाइट पर चलने के लिए अधिकृत नहीं है।</p></div>";
         window.location.href = "https://" + allowedDomain;
         return;
