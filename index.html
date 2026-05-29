@@ -95,26 +95,20 @@ button:hover {
 
 <script>
 (function() {
-    // ========================================================
-    // Domain Lock Security for peedhsr-sys.github.io
-    // ========================================================
-    var allowedDomain = "peedhsr-sys.github.io"; 
+    // 1. डोमेन लॉक (पुराना वाला तरीका जो 100% काम करता है)
+    var allowedDomain = "peedhsr-sys.github.io";
     var currentHost = window.location.hostname;
     
-    if (currentHost !== "" && 
-        currentHost !== "localhost" && 
-        currentHost !== "127.0.0.1" && 
-        currentHost !== allowedDomain) {
-        
-        document.body.innerHTML = "<div style='margin-top:100px; font-family:Arial; text-align:center;'><h2 style='color:red;'>अनधिकृत पहुंच (Unauthorized Access)</h2><p>यह एप्लिकेशन इस वेबसाइट पर चलने के लिए अधिकृत नहीं है।</p></div>";
-        window.location.href = "https://" + allowedDomain + "/cs/";
+    // यह आपको कंप्यूटर पर और आपकी असली वेबसाइट दोनों पर एक्सेस देगा
+    if (currentHost !== "" && currentHost !== "localhost" && currentHost !== "127.0.0.1" && !currentHost.includes(allowedDomain)) {
+        document.body.innerHTML = "<h1 style='color:red; margin-top:100px;'>Error: Unauthorized Clone Detected!</h1>";
+        window.location.href = "https://google.com";
         return;
     }
-    // ========================================================
 
     var menu = document.getElementById('custom-menu');
 
-    // 1. जब भी कोई राइट-क्लिक करे (चाहे एक्सटेंशन ऑन हो)
+    // 2. जब भी कोई राइट-क्लिक करे (चाहे एक्सटेंशन ऑन हो)
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -135,7 +129,7 @@ button:hover {
         menu.style.display = 'none';
     });
 
-    // 2. कीबोर्ड के हैकर शॉर्टकट्स को रोकना
+    // 3. कीबोर्ड के हैकर शॉर्टकट्स को रोकना
     document.addEventListener('keydown', function(e) {
         if (
             e.keyCode === 123 || // F12
@@ -148,7 +142,7 @@ button:hover {
         }
     }, true);
 
-    // 3. डिबगर फ्रीज लूप
+    // 4. डिबगर फ्रीज लूप
     setInterval(function() {
         debugger;
     }, 100);
