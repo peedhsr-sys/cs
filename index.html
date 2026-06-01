@@ -141,6 +141,23 @@ button:disabled {
     z-index: 999999;
     pointer-events: none;
 }
+
+.pass-box {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.pass-box input {
+    width: 45%;
+    margin-top: 10px;
+}
+.pass-box button {
+    margin-top: 10px;
+    padding: 12px 15px;
+    font-size: 16px;
+}
 </style>
 </head>
 
@@ -169,6 +186,18 @@ button:disabled {
     <button class="logout-btn" onclick="logout()">Logout</button>
 
     <h2 style="margin-top: 40px;">Admin Dashboard</h2>
+    
+    <div class="list-container" style="max-width: 600px;">
+        <h4 style="margin: 0 0 10px 0; text-align: center; color: #333;">Admin Password Management</h4>
+        <div class="pass-box">
+            <input type="password" id="oldAdminPass" placeholder="Enter Old Password">
+            <input type="password" id="newAdminPass" placeholder="Enter New Password">
+            <button onclick="changeAdminPassword()">Update Password</button>
+        </div>
+    </div>
+    
+    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
+    
     <p>यहाँ से अधिकतम 20 मोबाइल नंबर जोड़ें, केवल वही लोग नया रजिस्ट्रेशन कर पाएंगे।</p>
     
     <input type="text" id="newAllowedMobile" placeholder="Enter Mobile Number to Authorize">
@@ -185,7 +214,7 @@ button:disabled {
     <div class="session-timer" id="portalTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
 
-    <h2 style="margin-top: 40px;">Direct Original Certificate Print(For All Districts of Uttar Pradesh:)</h2>
+    <h2 style="margin-top: 40px;">Direct Original Certificate Print (For All Districts of Uttar Pradesh:)</h2>
     
     <select id="portalType" onchange="validateForm()">
         <option value="">-- पोर्टल चुनें / Select Portal --</option>
@@ -273,9 +302,12 @@ function handleAuthSubmit() {
 
     var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
     var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+    
+    // एडमिन का करंट पासवर्ड निकालें (डिफ़ॉल्ट 'admin123' है)
+    var currentAdminPass = localStorage.getItem('adminPassword') || 'admin123';
 
     if (activeTab === 'admin') {
-        if (mobileOrUser === 'admin' && pass === 'admin123') {
+        if (mobileOrUser === 'admin' && pass === currentAdminPass) {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             renderWhitelist();
@@ -314,6 +346,29 @@ function handleAuthSubmit() {
 }
 
 // ================= ADMIN DASHBOARD =================
+
+// नया एडमिन पासवर्ड सेट करने का फंक्शन 
+function changeAdminPassword() {
+    var oldPass = document.getElementById('oldAdminPass').value.trim();
+    var newPass = document.getElementById('newAdminPass').value.trim();
+    
+    if (oldPass === "" || newPass === "") {
+        alert("कृपया पुराना और नया दोनों पासवर्ड डालें!");
+        return;
+    }
+    
+    var currentAdminPass = localStorage.getItem('adminPassword') || 'admin123';
+    
+    if (oldPass === currentAdminPass) {
+        localStorage.setItem('adminPassword', newPass);
+        alert("पासवर्ड सफलतापूर्वक बदल दिया गया है! अगली बार नए पासवर्ड से लॉगिन करें।");
+        document.getElementById('oldAdminPass').value = '';
+        document.getElementById('newAdminPass').value = '';
+    } else {
+        alert("पुराना पासवर्ड गलत है! कृपया सही पासवर्ड डालें।");
+    }
+}
+
 function addMobileToWhitelist() {
     var mobileInput = document.getElementById('newAllowedMobile');
     var mobileNo = mobileInput.value.trim();
@@ -325,7 +380,7 @@ function addMobileToWhitelist() {
         return;
     }
     if (whitelist.length >= 20) {
-        alert("सीमा समाप्त! आप अधिकतम 20 मोबाइल नंबर ही जोड़ सकते हैं।");
+        alert("सीमा समाप्त! आप अधिकतम 20 मोबाइल नंबर ही जोड़ सकते हैं।");
         return;
     }
     whitelist.push(mobileNo);
