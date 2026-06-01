@@ -245,6 +245,7 @@ button:disabled {
 
 <div id="custom-menu">सुरक्षा के कारण यह विकल्प बंद है।</div>
 
+<!-- ================= PANEL 1: LOGIN & REGISTRATION ================= -->
 <div id="authPanel" class="box">
     
     <div class="nav-tabs">
@@ -254,18 +255,21 @@ button:disabled {
         <span id="tabChangePass" onclick="switchAuthTab('changePass')" style="color: #ffd60a;">Change Password</span>
     </div>
 
+    <!-- Apple Style Default Icon -->
     <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="profile-img">
 
     <h3 id="authTitle">User Login</h3>
     
     <input type="text" id="authUsername" placeholder="Enter Username (Mobile No or 'admin')">
     <input type="password" id="authPassword" placeholder="Enter Password">
+    <!-- यह बॉक्स सिर्फ तब दिखेगा जब चेंज पासवर्ड पर क्लिक होगा -->
     <input type="password" id="authNewPassword" placeholder="Enter New Password" style="display: none;">
     
     <br>
     <button onclick="handleAuthSubmit()">Submit</button>
 </div>
 
+<!-- ================= PANEL 2: ADMIN DASHBOARD ================= -->
 <div id="adminPanel" class="box" style="display: none;">
     <div class="session-timer" id="adminTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
@@ -285,6 +289,7 @@ button:disabled {
     </div>
 </div>
 
+<!-- ================= PANEL 3: MAIN PORTAL ================= -->
 <div id="mainPortal" class="box" style="display: none;">
     <div class="session-timer" id="portalTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
@@ -441,9 +446,17 @@ function handleAuthSubmit() {
             return;
         }
 
-        // अगर एडमिन नहीं है, तो सामान्य यूजर चेक करें -> Main Portal खुलेगा
+        // अगर एडमिन नहीं है, तो सामान्य यूजर चेक करें 
         var foundUser = users.find(function(u) { return u.username === mobileOrUser && u.password === pass; });
+        
         if (foundUser) {
+            // *** नया लॉजिक: चेक करें कि क्या यूजर अभी भी एडमिन की लिस्ट में मौजूद है ***
+            if (!whitelist.includes(mobileOrUser)) {
+                alert("एडमिन ने आपका नंबर लिस्ट से हटा दिया है! अब आप लॉगिन नहीं कर सकते।");
+                return;
+            }
+            
+            // अगर लिस्ट में है, तो Main Portal खुलेगा
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('mainPortal').style.display = 'block';
             document.getElementById('appno').value = ''; 
