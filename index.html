@@ -6,141 +6,236 @@
 <title>Application Portal with Strict Timer</title>
 
 <style>
+/* ================= APPLE/LINUX GLASSMORPHISM UI ================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    /* शानदार MacOS स्टाइल डार्क/एब्सट्रैक्ट बैकग्राउंड */
+    background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') no-repeat center center fixed;
+    background-size: cover;
     padding: 40px;
     text-align: center;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    color: #fff;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
+/* Glassmorphism Box */
 .box {
-    background: white;
+    background: rgba(20, 20, 20, 0.45); /* सेमी-ट्रांसपेरेंट डार्क */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     max-width: 800px;
     margin: auto;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 40px 30px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
+    overflow: hidden;
 }
 
+/* User/Apple Icon Profile Image */
+.profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+h2, h3 {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Apple Sleek Inputs */
 input, select {
     width: 90%;
-    padding: 12px;
-    font-size: 18px;
+    padding: 14px 20px;
+    font-size: 16px;
     margin-top: 20px;
     box-sizing: border-box;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    outline: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
+input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+input:focus, select:focus {
+    border: 1px solid #0a84ff;
+    box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.3);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+select option {
+    background: #1c1c1e; /* डार्क मोड ऑप्शंस */
+    color: #fff;
+}
+
+/* MacOS Style Buttons */
 button {
-    padding: 12px 25px;
-    font-size: 18px;
-    margin-top: 20px;
+    padding: 14px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 25px;
     cursor: pointer;
-    background: #007bff;
+    background: linear-gradient(180deg, #0a84ff 0%, #0066cc 100%);
     color: white;
-    border: none;
-    border-radius: 6px;
-    transition: 0.2s;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);
+    transition: all 0.2s ease-in-out;
 }
 
 button:hover:not(:disabled) {
-    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(10, 132, 255, 0.6);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(1px);
 }
 
 button:disabled {
-    background: #cccccc;
-    color: #666666;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     cursor: not-allowed;
 }
 
+/* Logout Red Apple Button */
 .logout-btn {
-    background: #dc3545;
+    background: linear-gradient(180deg, #ff453a 0%, #d70015 100%);
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 20px;
+    right: 20px;
     margin: 0;
-    padding: 8px 15px;
-    font-size: 14px;
-    border-radius: 4px;
+    padding: 8px 18px;
+    font-size: 13px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(255, 69, 58, 0.3);
 }
 .logout-btn:hover {
-    background: #c82333;
+    box-shadow: 0 6px 15px rgba(255, 69, 58, 0.5);
 }
 
+/* MacOS Control Center Style Timer */
 .session-timer {
     position: absolute;
-    top: 15px;
-    left: 15px;
-    font-size: 14px;
+    top: 20px;
+    left: 20px;
+    font-size: 13px;
     font-weight: bold;
-    color: #dc3545;
-    background: #ffeef0;
-    padding: 6px 12px;
-    border-radius: 4px;
-    border: 1px solid #fecdd3;
+    color: #ff453a;
+    background: rgba(255, 69, 58, 0.15);
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 69, 58, 0.3);
+    backdrop-filter: blur(10px);
 }
 
+/* Segmented Control Tabs (MacOS Style) */
 .nav-tabs {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
-    gap: 10px;
+    margin-bottom: 25px;
+    gap: 8px;
     flex-wrap: wrap;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 6px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 .nav-tabs span {
     padding: 10px 20px;
-    background: #e9ecef;
-    border-radius: 6px;
+    background: transparent;
+    border-radius: 10px;
     cursor: pointer;
-    font-weight: bold;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    transition: all 0.3s ease;
+}
+.nav-tabs span:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
 }
 .nav-tabs span.active {
-    background: #007bff;
-    color: white;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
+/* Glassmorphism List for Admin */
 .list-container {
     text-align: left;
-    max-width: 400px;
-    margin: 20px auto;
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
+    max-width: 450px;
+    margin: 25px auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 .list-item {
     display: flex;
     justify-content: space-between;
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 15px;
+}
+.list-item:last-child {
+    border-bottom: none;
 }
 .delete-btn {
-    background: none;
-    color: #dc3545;
-    border: none;
-    padding: 0;
+    background: rgba(255, 69, 58, 0.2);
+    color: #ff453a;
+    border: 1px solid rgba(255, 69, 58, 0.3);
+    padding: 5px 12px;
     margin: 0;
-    font-size: 14px;
-    cursor: pointer;
+    font-size: 12px;
+    border-radius: 6px;
+    box-shadow: none;
+}
+.delete-btn:hover {
+    background: rgba(255, 69, 58, 0.4);
+    box-shadow: 0 2px 8px rgba(255, 69, 58, 0.3);
 }
 
+/* Context Menu */
 #custom-menu {
     display: none;
     position: absolute;
-    background: #333;
+    background: rgba(30, 30, 30, 0.9);
     color: #fff;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 12px 20px;
+    border-radius: 8px;
     font-size: 14px;
-    box-shadow: 0px 2px 10px rgba(0,0,0,0.5);
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
     z-index: 999999;
     pointer-events: none;
+    backdrop-filter: blur(10px);
 }
 </style>
 </head>
@@ -149,52 +244,53 @@ button:disabled {
 
 <div id="custom-menu">सुरक्षा के कारण यह विकल्प बंद है।</div>
 
-<!-- ================= PANEL 1: LOGIN & REGISTRATION ================= -->
 <div id="authPanel" class="box">
-    <!-- नया 'Change Password' का बटन बाहर ही लगा दिया -->
+    
     <div class="nav-tabs">
         <span id="tabLogin" class="active" onclick="switchAuthTab('login')">Login</span>
         <span id="tabRegister" onclick="switchAuthTab('register')">New Registration</span>
         <span id="tabAdmin" onclick="switchAuthTab('admin')">Admin Login</span>
-        <span id="tabChangePass" onclick="switchAuthTab('changePass')" style="background: #ffc107; color: black;">Change Password</span>
+        <span id="tabChangePass" onclick="switchAuthTab('changePass')" style="color: #ffd60a;">Change Password</span>
     </div>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="profile-img">
 
     <h3 id="authTitle">User Login</h3>
     
     <input type="text" id="authUsername" placeholder="Enter Username (Mobile No or 'admin')">
     <input type="password" id="authPassword" placeholder="Enter Password">
-    <!-- यह बॉक्स सिर्फ तब दिखेगा जब चेंज पासवर्ड पर क्लिक होगा -->
     <input type="password" id="authNewPassword" placeholder="Enter New Password" style="display: none;">
     
     <br>
     <button onclick="handleAuthSubmit()">Submit</button>
 </div>
 
-<!-- ================= PANEL 2: ADMIN DASHBOARD ================= -->
 <div id="adminPanel" class="box" style="display: none;">
     <div class="session-timer" id="adminTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
 
-    <h2 style="margin-top: 40px;">Admin Dashboard</h2>
+    <img src="https://cdn-icons-png.flaticon.com/512/2206/2206368.png" alt="Admin" class="profile-img" style="margin-top: 30px;">
+    <h2>Admin Dashboard</h2>
     
-    <p>यहाँ से अधिकतम 20 मोबाइल नंबर जोड़ें, केवल वही लोग नया रजिस्ट्रेशन कर पाएंगे।</p>
+    <p style="color: rgba(255,255,255,0.7); font-size: 14px;">यहाँ से अधिकतम 20 मोबाइल नंबर जोड़ें, केवल वही लोग नया रजिस्ट्रेशन कर पाएंगे।</p>
     
     <input type="text" id="newAllowedMobile" placeholder="Enter Mobile Number to Authorize">
     <br>
     <button onclick="addMobileToWhitelist()">Add Mobile Number</button>
     
     <div class="list-container">
-        <strong>Authorized Mobile Numbers (<span id="currentCount">0</span>/20):</strong>
-        <div id="whitelistDisplay" style="margin-top: 10px;"></div>
+        <strong style="color: #0a84ff;">Authorized Mobile Numbers (<span id="currentCount">0</span>/20):</strong>
+        <div id="whitelistDisplay" style="margin-top: 15px;"></div>
     </div>
 </div>
 
-<!-- ================= PANEL 3: MAIN PORTAL ================= -->
 <div id="mainPortal" class="box" style="display: none;">
     <div class="session-timer" id="portalTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
 
-    <h2 style="margin-top: 40px;">Direct Original Certificate Print (For All Districts of Uttar Pradesh:)</h2>
+    <img src="https://cdn-icons-png.flaticon.com/512/2912/2912301.png" alt="Portal" class="profile-img" style="margin-top: 30px;">
+    <h2>Direct Original Certificate Print</h2>
+    <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 25px;">(For All Districts of Uttar Pradesh)</p>
 
     <select id="portalType" onchange="validateForm()">
         <option value="">-- पोर्टल चुनें / Select Portal --</option>
@@ -255,8 +351,15 @@ function switchAuthTab(tab) {
     document.getElementById('tabLogin').className = (tab === 'login') ? 'active' : '';
     document.getElementById('tabRegister').className = (tab === 'register') ? 'active' : '';
     document.getElementById('tabAdmin').className = (tab === 'admin') ? 'active' : '';
+    
     // Change password tab active styling
-    document.getElementById('tabChangePass').style.border = (tab === 'changePass') ? '2px solid #000' : 'none';
+    if(tab === 'changePass') {
+        document.getElementById('tabChangePass').classList.add('active');
+        document.getElementById('tabChangePass').style.border = '1px solid #ffd60a';
+    } else {
+        document.getElementById('tabChangePass').classList.remove('active');
+        document.getElementById('tabChangePass').style.border = '1px solid transparent';
+    }
     
     document.getElementById('authUsername').value = '';
     document.getElementById('authPassword').value = '';
@@ -274,9 +377,9 @@ function switchAuthTab(tab) {
         
         if (tab === 'login') {
             document.getElementById('authTitle').innerText = 'User Login';
-            document.getElementById('authUsername').placeholder = 'Enter Username (Mobile No)';
+            document.getElementById('authUsername').placeholder = 'Enter Username (Mobile No or admin)';
         } else if (tab === 'register') {
-            document.getElementById('authTitle').innerText = 'New Registration (Only for Authorized Mobiles)';
+            document.getElementById('authTitle').innerText = 'New Registration';
             document.getElementById('authUsername').placeholder = 'Enter Username (Mobile No)';
         } else if (tab === 'admin') {
             document.getElementById('authTitle').innerText = 'Admin Login';
@@ -325,8 +428,18 @@ function handleAuthSubmit() {
         alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
         switchAuthTab('login');
     } 
-    // 3. अगर कोई यूजर लॉगिन कर रहा है
+    // 3. अगर कोई यूजर लॉगिन कर रहा है (अब एडमिन भी यहाँ से लॉगिन कर सकता है)
     else if (activeTab === 'login') {
+        // चेक करें कि क्या यह एडमिन है
+        if (mobileOrUser === 'admin' && pass === currentAdminPass) {
+            document.getElementById('authPanel').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            renderWhitelist();
+            startSessionTimer();
+            return;
+        }
+
+        // अगर एडमिन नहीं है, तो सामान्य यूजर चेक करें
         var foundUser = users.find(function(u) { return u.username === mobileOrUser && u.password === pass; });
         if (foundUser) {
             document.getElementById('authPanel').style.display = 'none';
@@ -338,7 +451,7 @@ function handleAuthSubmit() {
             alert("गलत यूजरनेम (मोबाइल नंबर) या पासवर्ड!");
         }
     }
-    // 4. अगर कोई पासवर्ड बदल रहा है (बाहर से ही)
+    // 4. अगर कोई पासवर्ड बदल रहा है
     else if (activeTab === 'changePass') {
         var newPass = document.getElementById('authNewPassword').value.trim();
         if (newPass === "") {
@@ -351,7 +464,7 @@ function handleAuthSubmit() {
             if (pass === currentAdminPass) {
                 localStorage.setItem('adminPassword', newPass);
                 alert("एडमिन पासवर्ड सफलतापूर्वक बदल दिया गया है! अब नए पासवर्ड से लॉगिन करें।");
-                switchAuthTab('admin'); // बदलने के बाद एडमिन टैब पर भेज दो
+                switchAuthTab('admin'); 
             } else {
                 alert("एडमिन का पुराना पासवर्ड गलत है!");
             }
@@ -364,7 +477,7 @@ function handleAuthSubmit() {
                     users[userIndex].password = newPass;
                     localStorage.setItem('registeredUsers', JSON.stringify(users));
                     alert("आपका पासवर्ड सफलतापूर्वक बदल दिया गया है! अब नए पासवर्ड से लॉगिन करें।");
-                    switchAuthTab('login'); // बदलने के बाद लॉगिन टैब पर भेज दो
+                    switchAuthTab('login'); 
                 } else {
                     alert("पुराना पासवर्ड गलत है!");
                 }
@@ -410,7 +523,7 @@ function renderWhitelist() {
     container.innerHTML = '';
 
     if (whitelist.length === 0) {
-        container.innerHTML = '<em>कोई मोबाइल नंबर नहीं जोड़ा गया है।</em>';
+        container.innerHTML = '<em style="color: rgba(255,255,255,0.5);">कोई मोबाइल नंबर नहीं जोड़ा गया है।</em>';
         return;
     }
     whitelist.forEach(function(mobile, index) {
