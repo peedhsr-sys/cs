@@ -7,10 +7,8 @@
 
 <style>
 /* ================= APPLE/LINUX GLASSMORPHISM UI ================= */
-/* Strictly MacOS native fonts */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    /* शानदार MacOS स्टाइल डार्क/एब्सट्रैक्ट बैकग्राउंड */
     background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') no-repeat center center fixed;
     background-size: cover;
     padding: 40px;
@@ -26,7 +24,7 @@ body {
 
 /* Glassmorphism Box */
 .box {
-    background: rgba(20, 20, 20, 0.45); /* सेमी-ट्रांसपेरेंट डार्क */
+    background: rgba(20, 20, 20, 0.45);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     max-width: 800px;
@@ -85,7 +83,7 @@ input:focus, select:focus {
 }
 
 select option {
-    background: #1c1c1e; /* डार्क मोड ऑप्शंस */
+    background: #1c1c1e;
     color: #fff;
 }
 
@@ -106,6 +104,594 @@ button {
 }
 
 button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(10, 132, 255, 0.6);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+button:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
+}
+
+/* Logout Red Apple Button */
+.logout-btn {
+    background: linear-gradient(180deg, #ff453a 0%, #d70015 100%);
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    margin: 0;
+    padding: 8px 18px;
+    font-size: 13px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(255, 69, 58, 0.3);
+}
+.logout-btn:hover {
+    box-shadow: 0 6px 15px rgba(255, 69, 58, 0.5);
+}
+
+/* MacOS Control Center Style Timer */
+.session-timer {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ff453a;
+    background: rgba(255, 69, 58, 0.15);
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 69, 58, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+/* Segmented Control Tabs (MacOS Style) */
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    gap: 8px;
+    flex-wrap: wrap;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 6px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.nav-tabs span {
+    padding: 10px 20px;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    transition: all 0.3s ease;
+}
+.nav-tabs span:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+.nav-tabs span.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Glassmorphism List for Admin */
+.list-container {
+    text-align: left;
+    max-width: 450px;
+    margin: 25px auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 15px;
+}
+.list-item:last-child {
+    border-bottom: none;
+}
+.delete-btn {
+    background: rgba(255, 69, 58, 0.2);
+    color: #ff453a;
+    border: 1px solid rgba(255, 69, 58, 0.3);
+    padding: 5px 12px;
+    margin: 0;
+    font-size: 12px;
+    border-radius: 6px;
+    box-shadow: none;
+}
+.delete-btn:hover {
+    background: rgba(255, 69, 58, 0.4);
+    box-shadow: 0 2px 8px rgba(255, 69, 58, 0.3);
+}
+
+/* Context Menu */
+#custom-menu {
+    display: none;
+    position: absolute;
+    background: rgba(30, 30, 30, 0.9);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+    z-index: 999999;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+}
+
+/* ================= NEW MAC STYLE FULL HD ADMIN HEADER ================= */
+.mac-admin-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 40px;
+    margin-bottom: 25px;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    text-align: center;
+}
+.mac-admin-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.mac-badge {
+    display: inline-block;
+    background: #0066cc;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 12px rgba(0, 102, 204, 0.6);
+}
+</style>
+</head>
+
+<body>
+
+<div id="custom-menu">सुरक्षा के कारण यह विकल्प बंद है।</div>
+
+<div id="authPanel" class="box">
+    
+    <div class="nav-tabs">
+        <span id="tabLogin" class="active" onclick="switchAuthTab('login')">Login</span>
+        <span id="tabRegister" onclick="switchAuthTab('register')">New Registration</span>
+        <span id="tabAdmin" onclick="switchAuthTab('admin')">Admin Login</span>
+        <span id="tabChangePass" onclick="switchAuthTab('changePass')" style="color: #ffd60a;">Change Password</span>
+    </div>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="profile-img">
+
+    <h3 id="authTitle">User Login</h3>
+    
+    <input type="text" id="authUsername" placeholder="Enter Username (Mobile No or 'admin')">
+    <input type="password" id="authPassword" placeholder="Enter Password">
+    <input type="password" id="authConfirmPassword" placeholder="Confirm Password" style="display: none;">
+    
+    <br>
+    <button onclick="handleAuthSubmit()">Submit</button>
+</div>
+
+<div id="adminPanel" class="box" style="display: none;">
+    <div class="session-timer" id="adminTimer">Session: 05:00</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+    <div class="mac-admin-header">
+        <span class="mac-badge">macOS System Control</span>
+        <h2>Admin Dashboard Control Center</h2>
+    </div>
+    
+    <p style="color: rgba(255,255,255,0.7); font-size: 14px;">यहाँ से अधिकतम 20 मोबाइल नंबर जोड़ें, केवल वही लोग नया रजिस्ट्रेशन कर पाएंगे।</p>
+    
+    <input type="text" id="newAllowedMobile" placeholder="Enter Mobile Number to Authorize">
+    <br>
+    <button onclick="addMobileToWhitelist()">Add Mobile Number</button>
+    
+    <div class="list-container">
+        <strong style="color: #0a84ff;">Authorized Mobile Numbers (<span id="currentCount">0</span>/20):</strong>
+        <div id="whitelistDisplay" style="margin-top: 15px;"></div>
+    </div>
+</div>
+
+<div id="mainPortal" class="box" style="display: none;">
+    <div class="session-timer" id="portalTimer">Session: 05:00</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/2912/2912301.png" alt="Portal" class="profile-img" style="margin-top: 30px;">
+    <h2>Direct Original Certificate Print</h2>
+    <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 25px;">(For All Districts of Uttar Pradesh)</p>
+
+    <select id="portalType" onchange="validateForm()">
+        <option value="">-- पोर्टल चुनें / Select Portal --</option>
+        <option value="edistrict">e-District Portal</option>
+        <option value="ecitizen">e-Citizen (e-Sathi) Portal</option>
+    </select>
+    <br>
+
+    <select id="certType" onchange="validateForm()">
+        <option value="">-- प्रमाणपत्र चुनें / Select Certificate --</option>
+        <option value="aay">आय प्रमाणपत्र (Income Certificate)</option>
+        <option value="jati">जाति प्रमाणपत्र (Caste Certificate)</option>
+        <option value="niwas">निवास प्रमाणपत्र (Domicile Certificate)</option>
+    </select>
+    <br>
+
+    <input type="text" id="appno" placeholder="Enter Application Number" oninput="validateForm()">
+    <br>
+    
+    <button id="confirmBtn" onclick="openLink()" disabled>Confirm & Open Link</button>
+</div>
+
+<script>
+var activeTab = 'login';
+var countdownInterval; 
+
+// ================= टाइमर लॉजिक =================
+function startSessionTimer() {
+    clearInterval(countdownInterval); 
+    
+    var sessionEndTime = Date.now() + 300000; 
+
+    document.getElementById('adminTimer').innerText = "Session: 05:00";
+    document.getElementById('portalTimer').innerText = "Session: 05:00";
+
+    countdownInterval = setInterval(function() {
+        var timeLeft = Math.floor((sessionEndTime - Date.now()) / 1000);
+
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            logout();
+            alert("Session Expired! 5 मिनट पूरे हो गए हैं। आपको ऑटोमैटिक लॉगआउट कर दिया गया है।");
+            return;
+        }
+
+        var min = Math.floor(timeLeft / 60);
+        var sec = timeLeft % 60;
+        var formattedTime = (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
+        
+        document.getElementById('adminTimer').innerText = "Session: " + formattedTime;
+        document.getElementById('portalTimer').innerText = "Session: " + formattedTime;
+    }, 1000); 
+}
+
+// ================= TABS SWITCHING LOGIC =================
+function switchAuthTab(tab) {
+    activeTab = tab;
+    document.getElementById('tabLogin').className = (tab === 'login') ? 'active' : '';
+    document.getElementById('tabRegister').className = (tab === 'register') ? 'active' : '';
+    document.getElementById('tabAdmin').className = (tab === 'admin') ? 'active' : '';
+    
+    if(tab === 'changePass') {
+        document.getElementById('tabChangePass').classList.add('active');
+        document.getElementById('tabChangePass').style.border = '1px solid #ffd60a';
+    } else {
+        document.getElementById('tabChangePass').classList.remove('active');
+        document.getElementById('tabChangePass').style.border = '1px solid transparent';
+    }
+    
+    document.getElementById('authUsername').value = '';
+    document.getElementById('authPassword').value = '';
+    document.getElementById('authConfirmPassword').value = '';
+
+    // कंडीशन के हिसाब से कन्फर्म पासवर्ड का बॉक्स दिखाना या छुपाना
+    if (tab === 'register' || tab === 'changePass') {
+        document.getElementById('authConfirmPassword').style.display = 'inline-block';
+    } else {
+        document.getElementById('authConfirmPassword').style.display = 'none';
+    }
+    
+    // प्लेसहोल्डर और टाइटल्स सेट करना
+    if (tab === 'login') {
+        document.getElementById('authTitle').innerText = 'User Login';
+        document.getElementById('authUsername').placeholder = 'Enter Username (Mobile No or admin)';
+        document.getElementById('authPassword').placeholder = 'Enter Password';
+    } else if (tab === 'register') {
+        document.getElementById('authTitle').innerText = 'New Registration';
+        document.getElementById('authUsername').placeholder = 'Enter Username (Mobile No)';
+        document.getElementById('authPassword').placeholder = 'Enter Password';
+        document.getElementById('authConfirmPassword').placeholder = 'Confirm Password';
+    } else if (tab === 'admin') {
+        document.getElementById('authTitle').innerText = 'Admin Login';
+        document.getElementById('authUsername').placeholder = "Enter 'admin'";
+        document.getElementById('authPassword').placeholder = 'Enter Admin Password';
+    } else if (tab === 'changePass') {
+        document.getElementById('authTitle').innerText = 'Change Your Password';
+        document.getElementById('authUsername').placeholder = 'Enter Username (Mobile No or "admin")';
+        document.getElementById('authPassword').placeholder = 'Enter OLD Password';
+        document.getElementById('authConfirmPassword').placeholder = 'Enter NEW Password';
+    }
+}
+
+// ================= LOGIN, REGISTRATION & PASSWORD LOGIC =================
+function handleAuthSubmit() {
+    var mobileOrUser = document.getElementById('authUsername').value.trim();
+    var pass = document.getElementById('authPassword').value.trim();
+    var confirmPass = document.getElementById('authConfirmPassword').value.trim();
+    
+    if (mobileOrUser === "" || pass === "") {
+        alert("कृपया सभी फ़ील्ड भरें!");
+        return;
+    }
+
+    var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
+    var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+    
+    // एडमिन का डिफ़ॉल्ट पासवर्ड आपकी पसंद के अनुसार Abcd@6769 सेट किया गया है
+    var currentAdminPass = localStorage.getItem('adminPassword') || 'Abcd@6769';
+
+    // 1. एडमिन लॉगिन टैब
+    if (activeTab === 'admin') {
+        if (mobileOrUser === 'admin' && pass === currentAdminPass) {
+            document.getElementById('authPanel').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            renderWhitelist();
+            startSessionTimer();
+        } else {
+            alert("गलत एडमिन यूजरनेम या पासवर्ड!");
+        }
+    } 
+    // 2. नया रजिस्ट्रेशन टैब (दो बार पासवर्ड चेक करने के साथ)
+    else if (activeTab === 'register') {
+        if (confirmPass === "") {
+            alert("कृपया कन्फर्म पासवर्ड भी भरें!");
+            return;
+        }
+        if (pass !== confirmPass) {
+            alert("दोनों पासवर्ड आपस में मेल नहीं खा रहे हैं! कृपया सही डालें।");
+            return;
+        }
+        if (!whitelist.includes(mobileOrUser)) {
+            alert("यह मोबाइल नंबर एडमिन द्वारा लिस्ट में नहीं जोड़ा गया है। आप रजिस्ट्रेशन नहीं कर सकते!");
+            return;
+        }
+        var userExists = users.some(function(u) { return u.username === mobileOrUser; });
+        if (userExists) {
+            alert("यह मोबाइल नंबर पहले से रजिस्टर्ड है! कृपया सीधे लॉगिन करें।");
+            return;
+        }
+        users.push({ username: mobileOrUser, password: pass });
+        localStorage.setItem('registeredUsers', JSON.stringify(users));
+        alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
+        switchAuthTab('login');
+    } 
+    // 3. लॉगिन टैब
+    else if (activeTab === 'login') {
+        if (mobileOrUser === 'admin' && pass === currentAdminPass) {
+            document.getElementById('authPanel').style.display = 'none';
+            document.getElementById('mainPortal').style.display = 'block';
+            document.getElementById('appno').value = ''; 
+            validateForm();
+            startSessionTimer();
+            return;
+        }
+
+        var foundUser = users.find(function(u) { return u.username === mobileOrUser && u.password === pass; });
+        
+        if (foundUser) {
+            if (!whitelist.includes(mobileOrUser)) {
+                alert("एडमिन ने आपका नंबर लिस्ट से हटा दिया है! अब आप लॉगिन नहीं कर सकते।");
+                return;
+            }
+            
+            document.getElementById('authPanel').style.display = 'none';
+            document.getElementById('mainPortal').style.display = 'block';
+            document.getElementById('appno').value = ''; 
+            validateForm();
+            startSessionTimer();
+        } else {
+            alert("गलत यूजरनेम (मोबाइल नंबर) या पासवर्ड!");
+        }
+    }
+    // 4. पासवर्ड बदलने का टैब (दो बार पासवर्ड वेरिफिकेशन)
+    else if (activeTab === 'changePass') {
+        if (confirmPass === "") {
+            alert("कृपया नया पासवर्ड बॉक्स भी भरें!");
+            return;
+        }
+
+        if (mobileOrUser === 'admin') {
+            if (pass === currentAdminPass) {
+                localStorage.setItem('adminPassword', confirmPass);
+                alert("एडमिन पासवर्ड सफलतापूर्वक बदल दिया गया है! अब नए पासवर्ड से लॉगिन करें।");
+                switchAuthTab('admin'); 
+            } else {
+                alert("एडमिन का पुराना पासवर्ड गलत है!");
+            }
+        } 
+        else {
+            var userIndex = users.findIndex(function(u) { return u.username === mobileOrUser; });
+            if (userIndex !== -1) {
+                if (users[userIndex].password === pass) {
+                    users[userIndex].password = confirmPass;
+                    localStorage.setItem('registeredUsers', JSON.stringify(users));
+                    alert("आपका पासवर्ड सफलतापूर्वक बदल दिया गया है! अब नए पासवर्ड से लॉगिन करें।");
+                    switchAuthTab('login'); 
+                } else {
+                    alert("पुराना पासवर्ड गलत है!");
+                }
+            } else {
+                alert("यह यूजरनेम (मोबाइल नंबर) रजिस्टर्ड नहीं है!");
+            }
+        }
+    }
+}
+
+// ================= ADMIN DASHBOARD FUNCTIONS =================
+function addMobileToWhitelist() {
+    var mobileInput = document.getElementById('newAllowedMobile');
+    var mobileNo = mobileInput.value.trim();
+    if (mobileNo === "") return;
+
+    var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
+    if (whitelist.includes(mobileNo)) {
+        alert("यह मोबाइल नंबर पहले से लिस्ट में मौजूद है!");
+        return;
+    }
+    if (whitelist.length >= 20) {
+        alert("सीमा समाप्त! आप अधिकतम 20 मोबाइल नंबर ही जोड़ सकते हैं।");
+        return;
+    }
+    whitelist.push(mobileNo);
+    localStorage.setItem('allowedMobiles', JSON.stringify(whitelist));
+    mobileInput.value = '';
+    renderWhitelist();
+}
+
+function removeMobileFromWhitelist(index) {
+    var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
+    whitelist.splice(index, 1);
+    localStorage.setItem('allowedMobiles', JSON.stringify(whitelist));
+    renderWhitelist();
+}
+
+function renderWhitelist() {
+    var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
+    document.getElementById('currentCount').innerText = whitelist.length;
+    var container = document.getElementById('whitelistDisplay');
+    container.innerHTML = '';
+
+    if (whitelist.length === 0) {
+        container.innerHTML = '<em style="color: rgba(255,255,255,0.5);">कोई मोबाइल नंबर नहीं जोड़ा गया है।</em>';
+        return;
+    }
+    whitelist.forEach(function(mobile, index) {
+        container.innerHTML += '<div class="list-item"><span>' + (index + 1) + '. ' + mobile + '</span><button class="delete-btn" onclick="removeMobileFromWhitelist(' + index + ')">Remove</button></div>';
+    });
+}
+
+function logout() {
+    clearInterval(countdownInterval); 
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('mainPortal').style.display = 'none';
+    document.getElementById('authPanel').style.display = 'block';
+    switchAuthTab('login');
+}
+
+// ================= प्रिंट फंक्शन कोड =================
+function validateForm() {
+    var portalType = document.getElementById('portalType').value;
+    var certType = document.getElementById('certType').value;
+    var appNo = document.getElementById('appno').value.trim();
+    var btn = document.getElementById('confirmBtn');
+    
+    if (portalType !== "" && certType !== "" && appNo !== "") {
+        btn.disabled = false;
+    } else {
+        btn.disabled = true;
+    }
+}
+
+function openLink() {
+    var portalType = document.getElementById('portalType').value;
+    var certType = document.getElementById('certType').value;
+    var appNo = document.getElementById('appno').value.trim();
+    
+    if (portalType === "" || certType === "" || appNo === "") return;
+    
+    var encodedAppNo = btoa(appNo);
+    var finalUrl = "";
+    
+    if (portalType === "edistrict") {
+        if (certType === "jati") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "aay") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "niwas") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+        }
+    } 
+    else if (portalType === "ecitizen") {
+        if (certType === "jati") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "aay") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "niwas") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+        }
+    }
+    
+    var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
+    window.open(finalUrl, 'CertificatePrintWindow', windowFeatures);
+}
+
+// ================= सुरक्षा प्रतिबंध =================
+(function() {
+    var allowedDomain = "peedhsr-sys.github.io";
+    var currentHost = window.location.hostname;
+    
+    if (currentHost !== "" && currentHost !== "localhost" && currentHost !== "127.0.0.1" && !currentHost.includes(allowedDomain)) {
+        document.body.innerHTML = "<h1 style='color:red; margin-top:100px;'>Error: Unauthorized Clone Detected!</h1>";
+        window.location.href = "https://google.com";
+        return;
+    }
+
+    var menu = document.getElementById('custom-menu');
+
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        menu.style.display = 'block';
+        
+        setTimeout(function() {
+            menu.style.display = 'none';
+        }, 2000);
+    }, true);
+
+    document.addEventListener('click', function() {
+        menu.style.display = 'none';
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (
+            e.keyCode === 123 || 
+            (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || 
+            (e.ctrlKey && e.keyCode === 85) 
+        ) {
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+
+    setInterval(function() {
+        debugger;
+    }, 100);
+})();
+</script>
+
+</body>
+</html>
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(10, 132, 255, 0.6);
 }
