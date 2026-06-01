@@ -185,7 +185,7 @@ button:disabled {
     <div class="session-timer" id="portalTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
 
-    <h2 style="margin-top: 40px;">Direct Original Certificate Print(उत्तर प्रदेश के सभी जिलों के लिए )।...</h2>
+    <h2 style="margin-top: 40px;">Bittu Here (Direct Original Certificate Print-Portal)...</h2>
     
     <select id="portalType" onchange="validateForm()">
         <option value="">-- पोर्टल चुनें / Select Portal --</option>
@@ -372,6 +372,7 @@ function validateForm() {
     var appNo = document.getElementById('appno').value.trim();
     var btn = document.getElementById('confirmBtn');
     
+    // यहाँ कोई लम्बाई (Length) चेक नहीं है, बस बॉक्स खाली नहीं होना चाहिए!
     if (portalType !== "" && certType !== "" && appNo !== "") {
         btn.disabled = false;
     } else {
@@ -386,6 +387,7 @@ function openLink() {
     
     if (portalType === "" || certType === "" || appNo === "") return;
     
+    // यह फ़ंक्शन हर लम्बाई के नंबर को बेस64 (Base64) में सही से बदल देगा
     var encodedAppNo = btoa(appNo);
     var finalUrl = "";
     
