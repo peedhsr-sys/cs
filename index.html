@@ -83,57 +83,81 @@ button:disabled {
 <div class="box">
     <h2>Bittu Here (Direct Original Certificate Print-Portal)...</h2>
     
-    <input type="text" id="appno" placeholder="Enter Application Number" oninput="validateForm()">
+    <!-- पोर्टल चुनने का नया ड्रॉपडाउन -->
+    <select id="portalType" onchange="validateForm()">
+        <option value="">-- पोर्टल चुनें / Select Portal --</option>
+        <option value="edistrict">e-District Portal</option>
+        <option value="ecitizen">e-Citizen (e-Sathi) Portal</option>
+    </select>
     <br>
-    
+
+    <!-- 3 ऑप्शंस का ड्रॉपडाउन मेन्यू -->
     <select id="certType" onchange="validateForm()">
-        <option value="">-- कृपया चुनें / Select Option --</option>
+        <option value="">-- प्रमाणपत्र चुनें / Select Certificate --</option>
         <option value="aay">आय प्रमाणपत्र (Income Certificate)</option>
         <option value="jati">जाति प्रमाणपत्र (Caste Certificate)</option>
         <option value="niwas">निवास प्रमाणपत्र (Domicile Certificate)</option>
     </select>
     <br>
+
+    <!-- Application Number इनपुट बॉक्स -->
+    <input type="text" id="appno" placeholder="Enter Application Number" oninput="validateForm()">
+    <br>
     
+    <!-- कन्फर्म बटन (शुरुआत में डिसेबल रहेगा) -->
     <button id="confirmBtn" onclick="openLink()" disabled>Confirm & Open Link</button>
 </div>
 
 <script>
 // 1. बटन को ऑन/ऑफ (Enable/Disable) करने का फंक्शन
 function validateForm() {
-    var appNo = document.getElementById('appno').value.trim();
+    var portalType = document.getElementById('portalType').value;
     var certType = document.getElementById('certType').value;
+    var appNo = document.getElementById('appno').value.trim();
     var btn = document.getElementById('confirmBtn');
     
-    // अगर एप्लीकेशन नंबर भरा है और कोई ऑप्शन चुना गया है, तभी बटन खुलेगा
-    if (appNo !== "" && certType !== "") {
+    // अगर पोर्टल, सर्टिफिकेट और एप्लीकेशन नंबर तीनों भरे हैं, तभी बटन खुलेगा
+    if (portalType !== "" && certType !== "" && appNo !== "") {
         btn.disabled = false;
     } else {
         btn.disabled = true;
     }
 }
 
-// 2. लिंक जनरेट करके eDistrict जैसे पॉपअप विंडो में ओपन करने का फंक्शन
+// 2. लिंक जनरेट करके eDistrict/eCitizen जैसे पॉपअप विंडो में ओपन करने का फंक्शन
 function openLink() {
-    var appNo = document.getElementById('appno').value.trim();
+    var portalType = document.getElementById('portalType').value;
     var certType = document.getElementById('certType').value;
+    var appNo = document.getElementById('appno').value.trim();
     
-    if (appNo === "" || certType === "") return;
+    if (portalType === "" || certType === "" || appNo === "") return;
     
     // किसी भी एप्लीकेशन नंबर को ऑटोमैटिक Base64 में बदलना
     var encodedAppNo = btoa(appNo);
     var finalUrl = "";
     
-    // आपके दिए गए नियमों के अनुसार सटीक लिंक सेटिंग्स
-    if (certType === "jati") {
-        finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
-    } else if (certType === "aay") {
-        finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
-    } else if (certType === "niwas") {
-        finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+    // e-District पोर्टल के लिए लिंक्स
+    if (portalType === "edistrict") {
+        if (certType === "jati") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "aay") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "niwas") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+        }
+    } 
+    // e-Citizen (e-Sathi) पोर्टल के लिए लिंक्स
+    else if (portalType === "ecitizen") {
+        if (certType === "jati") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "aay") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "niwas") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+        }
     }
     
-    // न्यू टैब की जगह eDistrict जैसा पॉपअप विंडो (बिना टूलबार/URL बार के)
-    // स्क्रीनशॉट के अनुसार विंडो की चौड़ाई और ऊंचाई सेट की गई है
+    // न्यू टैब की जगह पॉपअप विंडो (बिना टूलबार/URL बार के)
     var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
     
     // पॉपअप ओपन करना
