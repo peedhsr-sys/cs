@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Application Portal with Auth</title>
+<title>Application Portal with Auth & Live Timer</title>
 
 <style>
 body {
@@ -24,7 +24,7 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    position: relative; /* लॉगआउट बटन को कोने में सेट करने के लिए */
+    position: relative;
 }
 
 input, select {
@@ -59,7 +59,6 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* ऊपर दाहिने कोने के लिए लॉगआउट बटन का नया स्टाइल */
 .logout-btn {
     background: #dc3545;
     position: absolute;
@@ -72,6 +71,19 @@ button:disabled {
 }
 .logout-btn:hover {
     background: #c82333;
+}
+
+.session-timer {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #dc3545;
+    background: #ffeef0;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #fecdd3;
 }
 
 .nav-tabs {
@@ -136,7 +148,6 @@ button:disabled {
 
 <div id="custom-menu">सुरक्षा के कारण यह विकल्प बंद है।</div>
 
-<!-- ================= PANEL 1: LOGIN & REGISTRATION ================= -->
 <div id="authPanel" class="box">
     <div class="nav-tabs">
         <span id="tabLogin" class="active" onclick="switchAuthTab('login')">Login</span>
@@ -153,12 +164,11 @@ button:disabled {
     <button onclick="handleAuthSubmit()">Submit</button>
 </div>
 
-<!-- ================= PANEL 2: ADMIN DASHBOARD ================= -->
 <div id="adminPanel" class="box" style="display: none;">
-    <!-- लॉगआउट बटन ऊपर कोने में -->
+    <div class="session-timer" id="adminTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
 
-    <h2>Admin Dashboard</h2>
+    <h2 style="margin-top: 40px;">Admin Dashboard</h2>
     <p>यहाँ से अधिकतम 20 मोबाइल नंबर जोड़ें, केवल वही लोग नया रजिस्ट्रेशन कर पाएंगे।</p>
     
     <input type="text" id="newAllowedMobile" placeholder="Enter Mobile Number to Authorize">
@@ -171,12 +181,11 @@ button:disabled {
     </div>
 </div>
 
-<!-- ================= PANEL 3: MAIN PORTAL ================= -->
 <div id="mainPortal" class="box" style="display: none;">
-    <!-- लॉगआउट बटन ऊपर कोने में -->
+    <div class="session-timer" id="portalTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
 
-    <h2>Bittu Here (Direct Original Certificate Print-Portal)...</h2>
+    <h2 style="margin-top: 40px;">Bittu Here (Direct Original Certificate Print-Portal)...</h2>
     
     <select id="portalType" onchange="validateForm()">
         <option value="">-- पोर्टल चुनें / Select Portal --</option>
@@ -200,27 +209,57 @@ button:disabled {
 </div>
 
 <script>
-// ================= LOGIN / REGISTRATION LOGIC =================
+// ================= LOGIN / REGISTRATION & SMOOTH TIMER LOGIC =================
 var activeTab = 'login';
-var sessionTimer; // सेशम टाइमर वेरिएबल
+var countdownInterval; 
+var totalSeconds = 300; // 5 minute = 300 seconds
+var timeLeft = totalSeconds;
 
-// सेशन टाइमर शुरू/रिसेट करने का फंक्शन (5 मिनट की निष्क्रियता)
-function resetSessionTimer() {
-    clearTimeout(sessionTimer);
-    
-    // टाइमर केवल तभी चलेगा जब यूजर या एडमिन लॉग-इन स्थिति में होंगे
-    if (document.getElementById('mainPortal').style.display === 'block' || 
-        document.getElementById('adminPanel').style.display === 'block') {
-        
-        sessionTimer = setTimeout(function() {
+// Login karte hi Clock ko ek baar setup karne ke liye
+function startSessionTimer() {
+    clearInterval(countdownInterval); 
+    timeLeft = totalSeconds; 
+    updateTimerUI(timeLeft);
+
+    countdownInterval = setInterval(function() {
+        timeLeft--;
+        updateTimerUI(timeLeft);
+
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
             logout();
             alert("Session Expired! सुरक्षा कारणों से आपका पोर्टल 5 मिनट बाद ऑटोमैटिक लॉगआउट कर दिया गया है।");
-        }, 300000); // 5 मिनट = 300,000 मिलीसेकंड
+        }
+    }, 1000); 
+}
+
+// User active hoga to sirf time value wanas 300 ho jayegi, clock breaks nahi hogi
+function resetSessionTimer() {
+    if (document.getElementById('mainPortal').style.display === 'block' || 
+        document.getElementById('adminPanel').style.display === 'block') {
+        timeLeft = totalSeconds;
+        updateTimerUI(timeLeft);
     }
 }
 
-// यूजर की एक्टिविटी पर टाइमर रिसेट होगा (ताकि काम करते समय लॉगआउट न हो)
-document.addEventListener('mousemove', resetSessionTimer);
+function updateTimerUI(seconds) {
+    var min = Math.floor(seconds / 60);
+    var sec = seconds % 60;
+    var formattedTime = (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
+    
+    document.getElementById('adminTimer').innerText = "Session: " + formattedTime;
+    document.getElementById('portalTimer').innerText = "Session: " + formattedTime;
+}
+
+// Ghost/Fake mousemove detection filter
+var lastX = 0, lastY = 0;
+document.addEventListener('mousemove', function(e) {
+    if (e.screenX === lastX && e.screenY === lastY) return; // Ignore fake browser shakes
+    lastX = e.screenX;
+    lastY = e.screenY;
+    resetSessionTimer();
+});
+
 document.addEventListener('click', resetSessionTimer);
 document.addEventListener('keydown', resetSessionTimer);
 
@@ -259,7 +298,7 @@ function handleAuthSubmit() {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             renderWhitelist();
-            resetSessionTimer(); // लॉगिन होते ही टाइमर शुरू
+            startSessionTimer(); // Hard start clock
         } else {
             alert("गलत एडमिन यूजरनेम या पासवर्ड!");
         }
@@ -288,7 +327,7 @@ function handleAuthSubmit() {
             document.getElementById('mainPortal').style.display = 'block';
             document.getElementById('appno').value = ''; 
             validateForm();
-            resetSessionTimer(); // लॉगिन होते ही टाइमर शुरू
+            startSessionTimer(); // Hard start clock
         } else {
             alert("गलत यूजरनेम (मोबाइल नंबर) या पासवर्ड!");
         }
@@ -342,7 +381,7 @@ function renderWhitelist() {
 }
 
 function logout() {
-    clearTimeout(sessionTimer); // लॉगआउट होने पर टाइमर बंद
+    clearInterval(countdownInterval); 
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('mainPortal').style.display = 'none';
     document.getElementById('authPanel').style.display = 'block';
