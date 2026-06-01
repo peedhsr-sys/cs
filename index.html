@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Application Portal</title>
+<title>Application Portal with Auth</title>
 
 <style>
 body {
@@ -11,7 +11,6 @@ body {
     background: #f2f2f2;
     padding: 40px;
     text-align: center;
-    /* टेक्स्ट को सेलेक्ट होने से रोकने के लिए */
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -53,14 +52,63 @@ button:hover:not(:disabled) {
     background: #0056b3;
 }
 
-/* बटन डिसेबल होने पर कैसा दिखेगा */
 button:disabled {
     background: #cccccc;
     color: #666666;
     cursor: not-allowed;
 }
 
-/* नकली मेन्यू */
+.logout-btn {
+    background: #dc3545;
+    margin-top: 10px;
+}
+.logout-btn:hover {
+    background: #c82333;
+}
+
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+.nav-tabs span {
+    padding: 10px 20px;
+    background: #e9ecef;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.nav-tabs span.active {
+    background: #007bff;
+    color: white;
+}
+
+.list-container {
+    text-align: left;
+    max-width: 400px;
+    margin: 20px auto;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+.delete-btn {
+    background: none;
+    color: #dc3545;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    cursor: pointer;
+}
+
 #custom-menu {
     display: none;
     position: absolute;
@@ -80,10 +128,46 @@ button:disabled {
 
 <div id="custom-menu">सुरक्षा के कारण यह विकल्प बंद है।</div>
 
-<div class="box">
-    <h2>Direct Original Certificate Print-Portal...</h2>
+<!-- ================= PANEL 1: LOGIN & REGISTRATION ================= -->
+<div id="authPanel" class="box">
+    <div class="nav-tabs">
+        <span id="tabLogin" class="active" onclick="switchAuthTab('login')">Login</span>
+        <span id="tabRegister" onclick="switchAuthTab('register')">New Registration</span>
+        <span id="tabAdmin" onclick="switchAuthTab('admin')">Admin Login</span>
+    </div>
+
+    <h3 id="authTitle">User Login</h3>
     
-    <!-- पोर्टल चुनने का नया ड्रॉपडाउन -->
+    <input type="text" id="authUsername" placeholder="Enter Username">
+    <input type="password" id="authPassword" placeholder="Enter Password">
+    <!-- यह इनपुट सिर्फ रजिस्ट्रेशन के समय दिखेगा -->
+    <input type="text" id="authAppNo" placeholder="Enter Authorized Application Number" style="display: none;">
+    
+    <br>
+    <button onclick="handleAuthSubmit()">Submit</button>
+</div>
+
+<!-- ================= PANEL 2: ADMIN DASHBOARD ================= -->
+<div id="adminPanel" class="box" style="display: none;">
+    <h2>Admin Dashboard</h2>
+    <p>यहाँ से अधिकतम 20 एप्लीकेशन नंबर जोड़ें जो रजिस्ट्रेशन कर सकें।</p>
+    
+    <input type="text" id="newAllowedApp" placeholder="Enter Application Number to Authorize">
+    <br>
+    <button onclick="addAppToWhitelist()">Add Number</button>
+    
+    <div class="list-container">
+        <strong>Authorized Numbers (<span id="currentCount">0</span>/20):</strong>
+        <div id="whitelistDisplay" style="margin-top: 10px;"></div>
+    </div>
+    
+    <button class="logout-btn" onclick="logout()">Logout Admin</button>
+</div>
+
+<!-- ================= PANEL 3: MAIN PORTAL (अछूता कोड) ================= -->
+<div id="mainPortal" class="box" style="display: none;">
+    <h2>Bittu Here (Direct Original Certificate Print-Portal)...</h2>
+    
     <select id="portalType" onchange="validateForm()">
         <option value="">-- पोर्टल चुनें / Select Portal --</option>
         <option value="edistrict">e-District Portal</option>
@@ -91,7 +175,6 @@ button:disabled {
     </select>
     <br>
 
-    <!-- 3 ऑप्शंस का ड्रॉपडाउन मेन्यू -->
     <select id="certType" onchange="validateForm()">
         <option value="">-- प्रमाणपत्र चुनें / Select Certificate --</option>
         <option value="aay">आय प्रमाणपत्र (Income Certificate)</option>
@@ -100,23 +183,161 @@ button:disabled {
     </select>
     <br>
 
-    <!-- Application Number इनपुट बॉक्स -->
     <input type="text" id="appno" placeholder="Enter Application Number" oninput="validateForm()">
     <br>
     
-    <!-- कन्फर्म बटन (शुरुआत में डिसेबल रहेगा) -->
     <button id="confirmBtn" onclick="openLink()" disabled>Confirm & Open Link</button>
+    <br>
+    <button class="logout-btn" onclick="logout()">Logout Portal</button>
 </div>
 
 <script>
-// 1. बटन को ऑन/ऑफ (Enable/Disable) करने का फंक्शन
+// ================= AUTHENTICATION LOGIC (NEW) =================
+var activeTab = 'login';
+
+function switchAuthTab(tab) {
+    activeTab = tab;
+    document.getElementById('tabLogin').className = (tab === 'login') ? 'active' : '';
+    document.getElementById('tabRegister').className = (tab === 'register') ? 'active' : '';
+    document.getElementById('tabAdmin').className = (tab === 'admin') ? 'active' : '';
+    
+    document.getElementById('authUsername').value = '';
+    document.getElementById('authPassword').value = '';
+    document.getElementById('authAppNo').value = '';
+
+    if (tab === 'login') {
+        document.getElementById('authTitle').innerText = 'User Login';
+        document.getElementById('authAppNo').style.display = 'none';
+    } else if (tab === 'register') {
+        document.getElementById('authTitle').innerText = 'New Registration';
+        document.getElementById('authAppNo').style.display = 'block';
+    } else if (tab === 'admin') {
+        document.getElementById('authTitle').innerText = 'Admin Login';
+        document.getElementById('authAppNo').style.display = 'none';
+    }
+}
+
+function handleAuthSubmit() {
+    var user = document.getElementById('authUsername').value.trim();
+    var pass = document.getElementById('authPassword').value.trim();
+    var appNo = document.getElementById('authAppNo').value.trim();
+    
+    if (user === "" || pass === "") {
+        alert("कृपया सभी फ़ील्ड भरें!");
+        return;
+    }
+
+    var whitelist = JSON.parse(localStorage.getItem('allowedApps')) || [];
+    var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+
+    if (activeTab === 'admin') {
+        // एडमिन क्रेडेंशियल (यहाँ से बदल सकते हैं)
+        if (user === 'admin' && pass === 'admin123') {
+            document.getElementById('authPanel').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            renderWhitelist();
+        } else {
+            alert("गलत एडमिन यूजरनेम या पासवर्ड!");
+        }
+    } 
+    else if (activeTab === 'register') {
+        if (appNo === "") {
+            alert("रजिस्ट्रेशन के लिए ऑथराइज्ड एप्लीकेशन नंबर जरूरी है!");
+            return;
+        }
+        // चेक करें कि नंबर एडमिन की लिस्ट में है या नहीं
+        if (!whitelist.includes(appNo)) {
+            alert("यह एप्लीकेशन नंबर एडमिन द्वारा स्वीकृत नहीं है। आप रजिस्ट्रेशन नहीं कर सकते!");
+            return;
+        }
+        // चेक करें कि यूजरनेम पहले से तो नहीं है
+        var userExists = users.some(function(u) { return u.username === user; });
+        if (userExists) {
+            alert("यह यूजरनेम पहले से मौजूद है!");
+            return;
+        }
+        
+        // यूजर सेव करें
+        users.push({ username: user, password: pass, appNo: appNo });
+        localStorage.setItem('registeredUsers', JSON.stringify(users));
+        alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
+        switchAuthTab('login');
+    } 
+    else if (activeTab === 'login') {
+        var foundUser = users.find(function(u) { return u.username === user && u.password === pass; });
+        if (foundUser) {
+            document.getElementById('authPanel').style.display = 'none';
+            document.getElementById('mainPortal').style.display = 'block';
+            // ऑटोमैटिक रूप से रजिस्टर्ड एप्लीकेशन नंबर भर दें (यूजर चाहे तो बदल भी सकता है)
+            document.getElementById('appno').value = foundUser.appNo;
+            validateForm();
+        } else {
+            alert("गलत यूजरनेम या पासवर्ड!");
+        }
+    }
+}
+
+// ================= ADMIN DASHBOARD LOGIC (NEW) =================
+function addAppToWhitelist() {
+    var appInput = document.getElementById('newAllowedApp');
+    var appNo = appInput.value.trim();
+    if (appNo === "") return;
+
+    var whitelist = JSON.parse(localStorage.getItem('allowedApps')) || [];
+    
+    if (whitelist.includes(appNo)) {
+        alert("यह नंबर पहले से लिस्ट में मौजूद है!");
+        return;
+    }
+    if (whitelist.length >= 20) {
+        alert("सीमा समाप्त! आप अधिकतम 20 नंबर ही जोड़ सकते हैं।");
+        return;
+    }
+
+    whitelist.push(appNo);
+    localStorage.setItem('allowedApps', JSON.stringify(whitelist));
+    appInput.value = '';
+    renderWhitelist();
+}
+
+function removeAppFromWhitelist(index) {
+    var whitelist = JSON.parse(localStorage.getItem('allowedApps')) || [];
+    whitelist.splice(index, 1);
+    localStorage.setItem('allowedApps', JSON.stringify(whitelist));
+    renderWhitelist();
+}
+
+function renderWhitelist() {
+    var whitelist = JSON.parse(localStorage.getItem('allowedApps')) || [];
+    document.getElementById('currentCount').innerText = whitelist.length;
+    var container = document.getElementById('whitelistDisplay');
+    container.innerHTML = '';
+
+    if (whitelist.length === 0) {
+        container.innerHTML = '<em>कोई नंबर नहीं जोड़ा गया है।</em>';
+        return;
+    }
+
+    whitelist.forEach(function(app, index) {
+        container.innerHTML += '<div class="list-item"><span>' + (index + 1) + '. ' + app + '</span><button class="delete-btn" onclick="removeAppFromWhitelist(' + index + ')">Remove</button></div>';
+    });
+}
+
+function logout() {
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('mainPortal').style.display = 'none';
+    document.getElementById('authPanel').style.display = 'block';
+    switchAuthTab('login');
+}
+
+
+// ================= आपका ओरिजिनल फंक्शन कोड (अछूता) =================
 function validateForm() {
     var portalType = document.getElementById('portalType').value;
     var certType = document.getElementById('certType').value;
     var appNo = document.getElementById('appno').value.trim();
     var btn = document.getElementById('confirmBtn');
     
-    // अगर पोर्टल, सर्टिफिकेट और एप्लीकेशन नंबर तीनों भरे हैं, तभी बटन खुलेगा
     if (portalType !== "" && certType !== "" && appNo !== "") {
         btn.disabled = false;
     } else {
@@ -124,7 +345,6 @@ function validateForm() {
     }
 }
 
-// 2. लिंक जनरेट करके eDistrict/eCitizen जैसे पॉपअप विंडो में ओपन करने का फंक्शन
 function openLink() {
     var portalType = document.getElementById('portalType').value;
     var certType = document.getElementById('certType').value;
@@ -132,11 +352,9 @@ function openLink() {
     
     if (portalType === "" || certType === "" || appNo === "") return;
     
-    // किसी भी एप्लीकेशन नंबर को ऑटोमैटिक Base64 में बदलना
     var encodedAppNo = btoa(appNo);
     var finalUrl = "";
     
-    // e-District पोर्टल के लिए लिंक्स
     if (portalType === "edistrict") {
         if (certType === "jati") {
             finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
@@ -146,7 +364,6 @@ function openLink() {
             finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
         }
     } 
-    // e-Citizen (e-Sathi) पोर्टल के लिए लिंक्स
     else if (portalType === "ecitizen") {
         if (certType === "jati") {
             finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
@@ -157,19 +374,15 @@ function openLink() {
         }
     }
     
-    // न्यू टैब की जगह पॉपअप विंडो (बिना टूलबार/URL बार के)
     var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
-    
-    // पॉपअप ओपन करना
     window.open(finalUrl, 'CertificatePrintWindow', windowFeatures);
 }
 
-// 3. सुरक्षा पाबंदियां (डोमेन लॉक, राइट-क्लिक और F12 ब्लॉकर) मेन पेज के लिए
+// ================= आपकी ओरिजिनल सुरक्षा पाबंदियां (अछूता) =================
 (function() {
     var allowedDomain = "peedhsr-sys.github.io";
     var currentHost = window.location.hostname;
     
-    // डोमेन लॉक (लोकलहोस्ट और आपके असली डोमेन को छोड़कर सब ब्लॉक करेगा)
     if (currentHost !== "" && currentHost !== "localhost" && currentHost !== "127.0.0.1" && !currentHost.includes(allowedDomain)) {
         document.body.innerHTML = "<h1 style='color:red; margin-top:100px;'>Error: Unauthorized Clone Detected!</h1>";
         window.location.href = "https://google.com";
@@ -178,7 +391,6 @@ function openLink() {
 
     var menu = document.getElementById('custom-menu');
 
-    // राइट-क्लिक रोकना
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -196,7 +408,6 @@ function openLink() {
         menu.style.display = 'none';
     });
 
-    // कीबोर्ड शॉर्टकट्स रोकना (F12, Ctrl+Shift+I/J, Ctrl+U)
     document.addEventListener('keydown', function(e) {
         if (
             e.keyCode === 123 || 
@@ -209,7 +420,6 @@ function openLink() {
         }
     }, true);
 
-    // डिबगर फ्रीज लूप
     setInterval(function() {
         debugger;
     }, 100);
