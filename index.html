@@ -138,10 +138,9 @@ button:disabled {
 
     <h3 id="authTitle">User Login</h3>
     
-    <input type="text" id="authUsername" placeholder="Enter Username">
+    <!-- यहाँ यूजरनेम ही मोबाइल नंबर की तरह काम करेगा -->
+    <input type="text" id="authUsername" placeholder="Enter Username (Mobile No)">
     <input type="password" id="authPassword" placeholder="Enter Password">
-    <!-- यह इनपुट सिर्फ रजिस्ट्रेशन के समय दिखेगा -->
-    <input type="text" id="authAppNo" placeholder="Enter Authorized Application Number" style="display: none;">
     
     <br>
     <button onclick="handleAuthSubmit()">Submit</button>
@@ -150,21 +149,21 @@ button:disabled {
 <!-- ================= PANEL 2: ADMIN DASHBOARD ================= -->
 <div id="adminPanel" class="box" style="display: none;">
     <h2>Admin Dashboard</h2>
-    <p>यहाँ से अधिकतम 20 एप्लीकेशन नंबर जोड़ें जो रजिस्ट्रेशन कर सकें।</p>
+    <p>यहाँ से अधिकतम 20 मोबाइल नंबर जोड़ें, केवल वही लोग नया रजिस्ट्रेशन कर पाएंगे।</p>
     
-    <input type="text" id="newAllowedApp" placeholder="Enter Application Number to Authorize">
+    <input type="text" id="newAllowedMobile" placeholder="Enter Mobile Number to Authorize">
     <br>
-    <button onclick="addAppToWhitelist()">Add Number</button>
+    <button onclick="addMobileToWhitelist()">Add Mobile Number</button>
     
     <div class="list-container">
-        <strong>Authorized Numbers (<span id="currentCount">0</span>/20):</strong>
+        <strong>Authorized Mobile Numbers (<span id="currentCount">0</span>/20):</strong>
         <div id="whitelistDisplay" style="margin-top: 10px;"></div>
     </div>
     
     <button class="logout-btn" onclick="logout()">Logout Admin</button>
 </div>
 
-<!-- ================= PANEL 3: MAIN PORTAL (अछूता कोड) ================= -->
+<!-- ================= PANEL 3: MAIN PORTAL (आपका ओरिजिनल कोड) ================= -->
 <div id="mainPortal" class="box" style="display: none;">
     <h2>Bittu Here (Direct Original Certificate Print-Portal)...</h2>
     
@@ -192,7 +191,7 @@ button:disabled {
 </div>
 
 <script>
-// ================= AUTHENTICATION LOGIC (NEW) =================
+// ================= LOGIN / REGISTRATION LOGIC =================
 var activeTab = 'login';
 
 function switchAuthTab(tab) {
@@ -203,36 +202,31 @@ function switchAuthTab(tab) {
     
     document.getElementById('authUsername').value = '';
     document.getElementById('authPassword').value = '';
-    document.getElementById('authAppNo').value = '';
 
     if (tab === 'login') {
         document.getElementById('authTitle').innerText = 'User Login';
-        document.getElementById('authAppNo').style.display = 'none';
     } else if (tab === 'register') {
-        document.getElementById('authTitle').innerText = 'New Registration';
-        document.getElementById('authAppNo').style.display = 'block';
+        document.getElementById('authTitle').innerText = 'New Registration (Only for Authorized Mobiles)';
     } else if (tab === 'admin') {
         document.getElementById('authTitle').innerText = 'Admin Login';
-        document.getElementById('authAppNo').style.display = 'none';
     }
 }
 
 function handleAuthSubmit() {
-    var user = document.getElementById('authUsername').value.trim();
+    var mobileOrUser = document.getElementById('authUsername').value.trim();
     var pass = document.getElementById('authPassword').value.trim();
-    var appNo = document.getElementById('authAppNo').value.trim();
     
-    if (user === "" || pass === "") {
+    if (mobileOrUser === "" || pass === "") {
         alert("कृपया सभी फ़ील्ड भरें!");
         return;
     }
 
-    var whitelist = JSON.parse(localStorage.getItem('allowedApps')) || [];
+    var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
     var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
     if (activeTab === 'admin') {
-        // एडमिन क्रेडेंशियल (यहाँ से बदल सकते हैं)
-        if (user === 'admin' && pass === 'admin123') {
+        // एडमिन आईडी और पासवर्ड (Username: admin, Password: admin123)
+        if (mobileOrUser === 'admin' && pass === 'admin123') {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             renderWhitelist();
@@ -241,85 +235,81 @@ function handleAuthSubmit() {
         }
     } 
     else if (activeTab === 'register') {
-        if (appNo === "") {
-            alert("रजिस्ट्रेशन के लिए ऑथराइज्ड एप्लीकेशन नंबर जरूरी है!");
-            return;
-        }
-        // चेक करें कि नंबर एडमिन की लिस्ट में है या नहीं
-        if (!whitelist.includes(appNo)) {
-            alert("यह एप्लीकेशन नंबर एडमिन द्वारा स्वीकृत नहीं है। आप रजिस्ट्रेशन नहीं कर सकते!");
-            return;
-        }
-        // चेक करें कि यूजरनेम पहले से तो नहीं है
-        var userExists = users.some(function(u) { return u.username === user; });
-        if (userExists) {
-            alert("यह यूजरनेम पहले से मौजूद है!");
+        // चेक करें कि यह मोबाइल नंबर एडमिन की लिस्ट में है या नहीं
+        if (!whitelist.includes(mobileOrUser)) {
+            alert("यह मोबाइल नंबर एडमिन द्वारा लिस्ट में नहीं जोड़ा गया है। आप रजिस्ट्रेशन नहीं कर सकते!");
             return;
         }
         
-        // यूजर सेव करें
-        users.push({ username: user, password: pass, appNo: appNo });
+        // चेक करें कि यह नंबर पहले से रजिस्टर्ड तो नहीं है
+        var userExists = users.some(function(u) { return u.username === mobileOrUser; });
+        if (userExists) {
+            alert("यह मोबाइल नंबर पहले से रजिस्टर्ड है! कृपया सीधे लॉगिन करें।");
+            return;
+        }
+        
+        // नया यूजर सेव करें
+        users.push({ username: mobileOrUser, password: pass });
         localStorage.setItem('registeredUsers', JSON.stringify(users));
         alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
         switchAuthTab('login');
     } 
     else if (activeTab === 'login') {
-        var foundUser = users.find(function(u) { return u.username === user && u.password === pass; });
+        var foundUser = users.find(function(u) { return u.username === mobileOrUser && u.password === pass; });
         if (foundUser) {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('mainPortal').style.display = 'block';
-            // ऑटोमैटिक रूप से रजिस्टर्ड एप्लीकेशन नंबर भर दें (यूजर चाहे तो बदल भी सकता है)
-            document.getElementById('appno').value = foundUser.appNo;
+            document.getElementById('appno').value = ''; // क्लीन इनपुट बॉक्स
             validateForm();
         } else {
-            alert("गलत यूजरनेम या पासवर्ड!");
+            alert("गलत यूजरनेम (मोबाइल नंबर) या पासवर्ड!");
         }
     }
 }
 
-// ================= ADMIN DASHBOARD LOGIC (NEW) =================
-function addAppToWhitelist() {
-    var appInput = document.getElementById('newAllowedApp');
-    var appNo = appInput.value.trim();
-    if (appNo === "") return;
+// ================= ADMIN DASHBOARD (MOBILE LIST) =================
+function addMobileToWhitelist() {
+    var mobileInput = document.getElementById('newAllowedMobile');
+    var mobileNo = mobileInput.value.trim();
+    if (mobileNo === "") return;
 
-    var whitelist = JSON.parse(localStorage.getItem('allowedApps')) || [];
+    var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
     
-    if (whitelist.includes(appNo)) {
-        alert("यह नंबर पहले से लिस्ट में मौजूद है!");
+    if (whitelist.includes(mobileNo)) {
+        alert("यह मोबाइल नंबर पहले से लिस्ट में मौजूद है!");
         return;
     }
     if (whitelist.length >= 20) {
-        alert("सीमा समाप्त! आप अधिकतम 20 नंबर ही जोड़ सकते हैं।");
+        alert("सीमा समाप्त! आप अधिकतम 20 मोबाइल नंबर ही जोड़ सकते हैं।");
         return;
     }
 
-    whitelist.push(appNo);
-    localStorage.setItem('allowedApps', JSON.stringify(whitelist));
-    appInput.value = '';
+    whitelist.push(mobileNo);
+    localStorage.setItem('allowedMobiles', JSON.stringify(whitelist));
+    mobileInput.value = '';
     renderWhitelist();
 }
 
-function removeAppFromWhitelist(index) {
-    var whitelist = JSON.parse(localStorage.getItem('allowedApps')) || [];
+function removeMobileFromWhitelist(index) {
+    var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
     whitelist.splice(index, 1);
-    localStorage.setItem('allowedApps', JSON.stringify(whitelist));
+    localStorage.setItem('allowedMobiles', JSON.stringify(whitelist));
     renderWhitelist();
 }
 
 function renderWhitelist() {
-    var whitelist = JSON.parse(localStorage.getItem('allowedApps')) || [];
+    var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
     document.getElementById('currentCount').innerText = whitelist.length;
     var container = document.getElementById('whitelistDisplay');
     container.innerHTML = '';
 
     if (whitelist.length === 0) {
-        container.innerHTML = '<em>कोई नंबर नहीं जोड़ा गया है।</em>';
+        container.innerHTML = '<em>कोई मोबाइल नंबर नहीं जोड़ा गया है।</em>';
         return;
     }
 
-    whitelist.forEach(function(app, index) {
-        container.innerHTML += '<div class="list-item"><span>' + (index + 1) + '. ' + app + '</span><button class="delete-btn" onclick="removeAppFromWhitelist(' + index + ')">Remove</button></div>';
+    whitelist.forEach(function(mobile, index) {
+        container.innerHTML += '<div class="list-item"><span>' + (index + 1) + '. ' + mobile + '</span><button class="delete-btn" onclick="removeMobileFromWhitelist(' + index + ')">Remove</button></div>';
     });
 }
 
