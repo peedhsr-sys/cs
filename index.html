@@ -24,6 +24,7 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative; /* लॉगआउट बटन को कोने में सेट करने के लिए */
 }
 
 input, select {
@@ -58,9 +59,16 @@ button:disabled {
     cursor: not-allowed;
 }
 
+/* ऊपर दाहिने कोने के लिए लॉगआउट बटन का नया स्टाइल */
 .logout-btn {
     background: #dc3545;
-    margin-top: 10px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    margin: 0;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 4px;
 }
 .logout-btn:hover {
     background: #c82333;
@@ -138,7 +146,6 @@ button:disabled {
 
     <h3 id="authTitle">User Login</h3>
     
-    <!-- यहाँ यूजरनेम ही मोबाइल नंबर की तरह काम करेगा -->
     <input type="text" id="authUsername" placeholder="Enter Username (Mobile No)">
     <input type="password" id="authPassword" placeholder="Enter Password">
     
@@ -148,6 +155,9 @@ button:disabled {
 
 <!-- ================= PANEL 2: ADMIN DASHBOARD ================= -->
 <div id="adminPanel" class="box" style="display: none;">
+    <!-- लॉगआउट बटन ऊपर कोने में -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
     <h2>Admin Dashboard</h2>
     <p>यहाँ से अधिकतम 20 मोबाइल नंबर जोड़ें, केवल वही लोग नया रजिस्ट्रेशन कर पाएंगे।</p>
     
@@ -159,12 +169,13 @@ button:disabled {
         <strong>Authorized Mobile Numbers (<span id="currentCount">0</span>/20):</strong>
         <div id="whitelistDisplay" style="margin-top: 10px;"></div>
     </div>
-    
-    <button class="logout-btn" onclick="logout()">Logout Admin</button>
 </div>
 
-<!-- ================= PANEL 3: MAIN PORTAL (आपका ओरिजिनल कोड) ================= -->
+<!-- ================= PANEL 3: MAIN PORTAL ================= -->
 <div id="mainPortal" class="box" style="display: none;">
+    <!-- लॉगआउट बटन ऊपर कोने में -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
     <h2>Bittu Here (Direct Original Certificate Print-Portal)...</h2>
     
     <select id="portalType" onchange="validateForm()">
@@ -186,13 +197,32 @@ button:disabled {
     <br>
     
     <button id="confirmBtn" onclick="openLink()" disabled>Confirm & Open Link</button>
-    <br>
-    <button class="logout-btn" onclick="logout()">Logout Portal</button>
 </div>
 
 <script>
 // ================= LOGIN / REGISTRATION LOGIC =================
 var activeTab = 'login';
+var sessionTimer; // सेशम टाइमर वेरिएबल
+
+// सेशन टाइमर शुरू/रिसेट करने का फंक्शन (5 मिनट की निष्क्रियता)
+function resetSessionTimer() {
+    clearTimeout(sessionTimer);
+    
+    // टाइमर केवल तभी चलेगा जब यूजर या एडमिन लॉग-इन स्थिति में होंगे
+    if (document.getElementById('mainPortal').style.display === 'block' || 
+        document.getElementById('adminPanel').style.display === 'block') {
+        
+        sessionTimer = setTimeout(function() {
+            logout();
+            alert("Session Expired! सुरक्षा कारणों से आपका पोर्टल 5 मिनट बाद ऑटोमैटिक लॉगआउट कर दिया गया है।");
+        }, 300000); // 5 मिनट = 300,000 मिलीसेकंड
+    }
+}
+
+// यूजर की एक्टिविटी पर टाइमर रिसेट होगा (ताकि काम करते समय लॉगआउट न हो)
+document.addEventListener('mousemove', resetSessionTimer);
+document.addEventListener('click', resetSessionTimer);
+document.addEventListener('keydown', resetSessionTimer);
 
 function switchAuthTab(tab) {
     activeTab = tab;
@@ -225,30 +255,27 @@ function handleAuthSubmit() {
     var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
     if (activeTab === 'admin') {
-        // एडमिन आईडी और पासवर्ड (Username: admin, Password: admin123)
         if (mobileOrUser === 'admin' && pass === 'admin123') {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             renderWhitelist();
+            resetSessionTimer(); // लॉगिन होते ही टाइमर शुरू
         } else {
             alert("गलत एडमिन यूजरनेम या पासवर्ड!");
         }
     } 
     else if (activeTab === 'register') {
-        // चेक करें कि यह मोबाइल नंबर एडमिन की लिस्ट में है या नहीं
         if (!whitelist.includes(mobileOrUser)) {
             alert("यह मोबाइल नंबर एडमिन द्वारा लिस्ट में नहीं जोड़ा गया है। आप रजिस्ट्रेशन नहीं कर सकते!");
             return;
         }
         
-        // चेक करें कि यह नंबर पहले से रजिस्टर्ड तो नहीं है
         var userExists = users.some(function(u) { return u.username === mobileOrUser; });
         if (userExists) {
             alert("यह मोबाइल नंबर पहले से रजिस्टर्ड है! कृपया सीधे लॉगिन करें।");
             return;
         }
         
-        // नया यूजर सेव करें
         users.push({ username: mobileOrUser, password: pass });
         localStorage.setItem('registeredUsers', JSON.stringify(users));
         alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
@@ -259,15 +286,16 @@ function handleAuthSubmit() {
         if (foundUser) {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('mainPortal').style.display = 'block';
-            document.getElementById('appno').value = ''; // क्लीन इनपुट बॉक्स
+            document.getElementById('appno').value = ''; 
             validateForm();
+            resetSessionTimer(); // लॉगिन होते ही टाइमर शुरू
         } else {
             alert("गलत यूजरनेम (मोबाइल नंबर) या पासवर्ड!");
         }
     }
 }
 
-// ================= ADMIN DASHBOARD (MOBILE LIST) =================
+// ================= ADMIN DASHBOARD =================
 function addMobileToWhitelist() {
     var mobileInput = document.getElementById('newAllowedMobile');
     var mobileNo = mobileInput.value.trim();
@@ -314,6 +342,7 @@ function renderWhitelist() {
 }
 
 function logout() {
+    clearTimeout(sessionTimer); // लॉगआउट होने पर टाइमर बंद
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('mainPortal').style.display = 'none';
     document.getElementById('authPanel').style.display = 'block';
@@ -321,7 +350,7 @@ function logout() {
 }
 
 
-// ================= आपका ओरिजिनल फंक्शन कोड (अछूता) =================
+// ================= ओरिजिनल प्रिंट फंक्शन कोड =================
 function validateForm() {
     var portalType = document.getElementById('portalType').value;
     var certType = document.getElementById('certType').value;
@@ -368,7 +397,7 @@ function openLink() {
     window.open(finalUrl, 'CertificatePrintWindow', windowFeatures);
 }
 
-// ================= आपकी ओरिजिनल सुरक्षा पाबंदियां (अछूता) =================
+// ================= ओरिजिनल सुरक्षा पाबंदियां =================
 (function() {
     var allowedDomain = "peedhsr-sys.github.io";
     var currentHost = window.location.hostname;
