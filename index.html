@@ -216,6 +216,17 @@ button:disabled {
 
     <h2 style="margin-top: 40px;">Direct Original Certificate Print (For All Districts of Uttar Pradesh:)</h2>
     
+    <div class="list-container" style="max-width: 600px;">
+        <h4 style="margin: 0 0 10px 0; text-align: center; color: #333;">Change Your Password</h4>
+        <div class="pass-box">
+            <input type="password" id="oldUserPass" placeholder="Enter Old Password">
+            <input type="password" id="newUserPass" placeholder="Enter New Password">
+            <button onclick="changeUserPassword()">Update Password</button>
+        </div>
+    </div>
+    
+    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
+
     <select id="portalType" onchange="validateForm()">
         <option value="">-- पोर्टल चुनें / Select Portal --</option>
         <option value="edistrict">e-District Portal</option>
@@ -240,6 +251,7 @@ button:disabled {
 <script>
 var activeTab = 'login';
 var countdownInterval; 
+var loggedInUser = ""; // करंट यूजर को ट्रैक करने के लिए
 
 // ================= एकदम असली और कठोर टाइमर लॉजिक =================
 function startSessionTimer() {
@@ -334,6 +346,7 @@ function handleAuthSubmit() {
     else if (activeTab === 'login') {
         var foundUser = users.find(function(u) { return u.username === mobileOrUser && u.password === pass; });
         if (foundUser) {
+            loggedInUser = foundUser.username; // करंट यूजर सेव करें
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('mainPortal').style.display = 'block';
             document.getElementById('appno').value = ''; 
@@ -347,7 +360,7 @@ function handleAuthSubmit() {
 
 // ================= ADMIN DASHBOARD =================
 
-// नया एडमिन पासवर्ड सेट करने का फंक्शन 
+// एडमिन पासवर्ड सेट करने का फंक्शन 
 function changeAdminPassword() {
     var oldPass = document.getElementById('oldAdminPass').value.trim();
     var newPass = document.getElementById('newAdminPass').value.trim();
@@ -413,10 +426,41 @@ function renderWhitelist() {
 
 function logout() {
     clearInterval(countdownInterval); // टाइमर बंद
+    loggedInUser = ""; // करंट यूजर हटा दें
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('mainPortal').style.display = 'none';
     document.getElementById('authPanel').style.display = 'block';
     switchAuthTab('login');
+}
+
+
+// ================= USER PASSWORD CHANGE =================
+function changeUserPassword() {
+    var oldPass = document.getElementById('oldUserPass').value.trim();
+    var newPass = document.getElementById('newUserPass').value.trim();
+    
+    if (oldPass === "" || newPass === "") {
+        alert("कृपया पुराना और नया दोनों पासवर्ड डालें!");
+        return;
+    }
+    
+    var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+    // करंट यूजर खोजें
+    var userIndex = users.findIndex(function(u) { return u.username === loggedInUser; });
+    
+    if (userIndex !== -1) {
+        if (users[userIndex].password === oldPass) {
+            users[userIndex].password = newPass; // नया पासवर्ड सेट करें
+            localStorage.setItem('registeredUsers', JSON.stringify(users)); // सेव करें
+            alert("आपका पासवर्ड सफलतापूर्वक बदल दिया गया है! अगली बार नए पासवर्ड से लॉगिन करें।");
+            document.getElementById('oldUserPass').value = '';
+            document.getElementById('newUserPass').value = '';
+        } else {
+            alert("पुराना पासवर्ड गलत है! कृपया सही पासवर्ड डालें।");
+        }
+    } else {
+        alert("कोई त्रुटि हुई! कृपया दोबारा लॉगिन करें।");
+    }
 }
 
 
