@@ -112,7 +112,7 @@ function validateForm() {
     }
 }
 
-// 2. लिंक जनरेट करके न्यू टैब में ओपन करने का फंक्शन
+// 2. लिंक जनरेट करके eDistrict जैसे पॉपअप विंडो में ओपन करने का फंक्शन
 function openLink() {
     var appNo = document.getElementById('appno').value.trim();
     var certType = document.getElementById('certType').value;
@@ -132,15 +132,20 @@ function openLink() {
         finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
     }
     
-    // न्यू टैब (_blank) में लिंक ओपन करना
-    window.open(finalUrl, '_blank');
+    // न्यू टैब की जगह eDistrict जैसा पॉपअप विंडो (बिना टूलबार/URL बार के)
+    // स्क्रीनशॉट के अनुसार विंडो की चौड़ाई और ऊंचाई सेट की गई है
+    var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
+    
+    // पॉपअप ओपन करना
+    window.open(finalUrl, 'CertificatePrintWindow', windowFeatures);
 }
 
-// 3. सुरक्षा पाबंदियां (डोमेन लॉक, राइट-क्लिक और F12 ब्लॉकर)
+// 3. सुरक्षा पाबंदियां (डोमेन लॉक, राइट-क्लिक और F12 ब्लॉकर) मेन पेज के लिए
 (function() {
     var allowedDomain = "peedhsr-sys.github.io";
     var currentHost = window.location.hostname;
     
+    // डोमेन लॉक (लोकलहोस्ट और आपके असली डोमेन को छोड़कर सब ब्लॉक करेगा)
     if (currentHost !== "" && currentHost !== "localhost" && currentHost !== "127.0.0.1" && !currentHost.includes(allowedDomain)) {
         document.body.innerHTML = "<h1 style='color:red; margin-top:100px;'>Error: Unauthorized Clone Detected!</h1>";
         window.location.href = "https://google.com";
