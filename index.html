@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Application Portal with Auth & Live Timer</title>
+<title>Application Portal with Strict Timer</title>
 
 <style>
 body {
@@ -209,60 +209,41 @@ button:disabled {
 </div>
 
 <script>
-// ================= LOGIN / REGISTRATION & SMOOTH TIMER LOGIC =================
 var activeTab = 'login';
 var countdownInterval; 
-var totalSeconds = 300; // 5 minute = 300 seconds
-var timeLeft = totalSeconds;
 
-// Login karte hi Clock ko ek baar setup karne ke liye
+// ================= एकदम असली और कठोर टाइमर लॉजिक =================
 function startSessionTimer() {
-    clearInterval(countdownInterval); 
-    timeLeft = totalSeconds; 
-    updateTimerUI(timeLeft);
+    clearInterval(countdownInterval); // पुरानी कोई घड़ी चल रही हो तो बंद करें
+    
+    // लॉगिन करते ही अगले 5 मिनट (300,000 मिलीसेकंड) का फिक्स समय सेट कर दिया
+    var sessionEndTime = Date.now() + 300000; 
+
+    // तुरंत 05:00 दिखाएं
+    document.getElementById('adminTimer').innerText = "Session: 05:00";
+    document.getElementById('portalTimer').innerText = "Session: 05:00";
 
     countdownInterval = setInterval(function() {
-        timeLeft--;
-        updateTimerUI(timeLeft);
+        // खत्म होने वाले समय में से अभी का समय घटाएं (सेकंड निकालने के लिए)
+        var timeLeft = Math.floor((sessionEndTime - Date.now()) / 1000);
 
         if (timeLeft <= 0) {
             clearInterval(countdownInterval);
             logout();
-            alert("Session Expired! सुरक्षा कारणों से आपका पोर्टल 5 मिनट बाद ऑटोमैटिक लॉगआउट कर दिया गया है।");
+            alert("Session Expired! 5 मिनट पूरे हो गए हैं। आपको ऑटोमैटिक लॉगआउट कर दिया गया है।");
+            return;
         }
+
+        var min = Math.floor(timeLeft / 60);
+        var sec = timeLeft % 60;
+        var formattedTime = (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
+        
+        document.getElementById('adminTimer').innerText = "Session: " + formattedTime;
+        document.getElementById('portalTimer').innerText = "Session: " + formattedTime;
     }, 1000); 
 }
 
-// User active hoga to sirf time value wanas 300 ho jayegi, clock breaks nahi hogi
-function resetSessionTimer() {
-    if (document.getElementById('mainPortal').style.display === 'block' || 
-        document.getElementById('adminPanel').style.display === 'block') {
-        timeLeft = totalSeconds;
-        updateTimerUI(timeLeft);
-    }
-}
-
-function updateTimerUI(seconds) {
-    var min = Math.floor(seconds / 60);
-    var sec = seconds % 60;
-    var formattedTime = (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
-    
-    document.getElementById('adminTimer').innerText = "Session: " + formattedTime;
-    document.getElementById('portalTimer').innerText = "Session: " + formattedTime;
-}
-
-// Ghost/Fake mousemove detection filter
-var lastX = 0, lastY = 0;
-document.addEventListener('mousemove', function(e) {
-    if (e.screenX === lastX && e.screenY === lastY) return; // Ignore fake browser shakes
-    lastX = e.screenX;
-    lastY = e.screenY;
-    resetSessionTimer();
-});
-
-document.addEventListener('click', resetSessionTimer);
-document.addEventListener('keydown', resetSessionTimer);
-
+// ================= LOGIN / REGISTRATION =================
 function switchAuthTab(tab) {
     activeTab = tab;
     document.getElementById('tabLogin').className = (tab === 'login') ? 'active' : '';
@@ -298,7 +279,7 @@ function handleAuthSubmit() {
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             renderWhitelist();
-            startSessionTimer(); // Hard start clock
+            startSessionTimer(); // लॉगिन होते ही टाइमर चालू
         } else {
             alert("गलत एडमिन यूजरनेम या पासवर्ड!");
         }
@@ -308,13 +289,11 @@ function handleAuthSubmit() {
             alert("यह मोबाइल नंबर एडमिन द्वारा लिस्ट में नहीं जोड़ा गया है। आप रजिस्ट्रेशन नहीं कर सकते!");
             return;
         }
-        
         var userExists = users.some(function(u) { return u.username === mobileOrUser; });
         if (userExists) {
             alert("यह मोबाइल नंबर पहले से रजिस्टर्ड है! कृपया सीधे लॉगिन करें।");
             return;
         }
-        
         users.push({ username: mobileOrUser, password: pass });
         localStorage.setItem('registeredUsers', JSON.stringify(users));
         alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
@@ -327,7 +306,7 @@ function handleAuthSubmit() {
             document.getElementById('mainPortal').style.display = 'block';
             document.getElementById('appno').value = ''; 
             validateForm();
-            startSessionTimer(); // Hard start clock
+            startSessionTimer(); // लॉगिन होते ही टाइमर चालू
         } else {
             alert("गलत यूजरनेम (मोबाइल नंबर) या पासवर्ड!");
         }
@@ -341,7 +320,6 @@ function addMobileToWhitelist() {
     if (mobileNo === "") return;
 
     var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
-    
     if (whitelist.includes(mobileNo)) {
         alert("यह मोबाइल नंबर पहले से लिस्ट में मौजूद है!");
         return;
@@ -350,7 +328,6 @@ function addMobileToWhitelist() {
         alert("सीमा समाप्त! आप अधिकतम 20 मोबाइल नंबर ही जोड़ सकते हैं।");
         return;
     }
-
     whitelist.push(mobileNo);
     localStorage.setItem('allowedMobiles', JSON.stringify(whitelist));
     mobileInput.value = '';
@@ -374,14 +351,13 @@ function renderWhitelist() {
         container.innerHTML = '<em>कोई मोबाइल नंबर नहीं जोड़ा गया है।</em>';
         return;
     }
-
     whitelist.forEach(function(mobile, index) {
         container.innerHTML += '<div class="list-item"><span>' + (index + 1) + '. ' + mobile + '</span><button class="delete-btn" onclick="removeMobileFromWhitelist(' + index + ')">Remove</button></div>';
     });
 }
 
 function logout() {
-    clearInterval(countdownInterval); 
+    clearInterval(countdownInterval); // टाइमर बंद
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('mainPortal').style.display = 'none';
     document.getElementById('authPanel').style.display = 'block';
