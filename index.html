@@ -7,10 +7,9 @@
 
 <style>
 /* ================= APPLE/LINUX GLASSMORPHISM UI ================= */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
-
+/* Strictly MacOS native fonts */
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
     /* शानदार MacOS स्टाइल डार्क/एब्सट्रैक्ट बैकग्राउंड */
     background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') no-repeat center center fixed;
     background-size: cover;
@@ -63,6 +62,7 @@ input, select {
     width: 90%;
     padding: 14px 20px;
     font-size: 16px;
+    font-family: inherit;
     margin-top: 20px;
     box-sizing: border-box;
     border-radius: 12px;
@@ -93,6 +93,7 @@ select option {
 button {
     padding: 14px 30px;
     font-size: 16px;
+    font-family: inherit;
     font-weight: 600;
     margin-top: 25px;
     cursor: pointer;
@@ -401,7 +402,7 @@ function handleAuthSubmit() {
     var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
     var currentAdminPass = localStorage.getItem('adminPassword') || 'admin123';
 
-    // 1. अगर एडमिन लॉगिन कर रहा है
+    // 1. अगर एडमिन 'Admin Login' टैब से लॉगिन कर रहा है -> Dashboard खुलेगा
     if (activeTab === 'admin') {
         if (mobileOrUser === 'admin' && pass === currentAdminPass) {
             document.getElementById('authPanel').style.display = 'none';
@@ -428,18 +429,19 @@ function handleAuthSubmit() {
         alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
         switchAuthTab('login');
     } 
-    // 3. अगर कोई यूजर लॉगिन कर रहा है (अब एडमिन भी यहाँ से लॉगिन कर सकता है)
+    // 3. अगर कोई 'Login' टैब से लॉगिन कर रहा है 
     else if (activeTab === 'login') {
-        // चेक करें कि क्या यह एडमिन है
+        // चेक करें कि क्या यह एडमिन है -> Main Portal खुलेगा
         if (mobileOrUser === 'admin' && pass === currentAdminPass) {
             document.getElementById('authPanel').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            renderWhitelist();
+            document.getElementById('mainPortal').style.display = 'block';
+            document.getElementById('appno').value = ''; 
+            validateForm();
             startSessionTimer();
             return;
         }
 
-        // अगर एडमिन नहीं है, तो सामान्य यूजर चेक करें
+        // अगर एडमिन नहीं है, तो सामान्य यूजर चेक करें -> Main Portal खुलेगा
         var foundUser = users.find(function(u) { return u.username === mobileOrUser && u.password === pass; });
         if (foundUser) {
             document.getElementById('authPanel').style.display = 'none';
