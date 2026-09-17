@@ -401,12 +401,14 @@ function switchAuthTab(tab) {
     document.getElementById('authPassword').value = '';
     document.getElementById('authConfirmPassword').value = '';
 
+    // कंडीशन के हिसाब से कन्फर्म पासवर्ड का बॉक्स दिखाना या छुपाना
     if (tab === 'register' || tab === 'changePass') {
         document.getElementById('authConfirmPassword').style.display = 'inline-block';
     } else {
         document.getElementById('authConfirmPassword').style.display = 'none';
     }
     
+    // प्लेसहोल्डर और टाइटल्स सेट करना
     if (tab === 'login') {
         document.getElementById('authTitle').innerText = 'User Login';
         document.getElementById('authUsername').placeholder = 'Enter Username (Mobile No or admin)';
@@ -442,8 +444,10 @@ function handleAuthSubmit() {
     var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
     var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
     
+    // एडमिन का डिफ़ॉल्ट पासवर्ड आपकी पसंद के अनुसार Abcd@6769 सेट किया गया है
     var currentAdminPass = localStorage.getItem('adminPassword') || 'Abcd@6769';
 
+    // 1. एडमिन लॉगिन टैब
     if (activeTab === 'admin') {
         if (mobileOrUser === 'admin' && pass === currentAdminPass) {
             document.getElementById('authPanel').style.display = 'none';
@@ -454,6 +458,7 @@ function handleAuthSubmit() {
             alert("गलत एडमिन यूजरनेम या पासवर्ड!");
         }
     } 
+    // 2. नया रजिस्ट्रेशन टैब (दो बार पासवर्ड चेक करने के साथ)
     else if (activeTab === 'register') {
         if (confirmPass === "") {
             alert("कृपया कन्फर्म पासवर्ड भी भरें!");
@@ -477,6 +482,7 @@ function handleAuthSubmit() {
         alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
         switchAuthTab('login');
     } 
+    // 3. लॉगिन टैब
     else if (activeTab === 'login') {
         if (mobileOrUser === 'admin' && pass === currentAdminPass) {
             document.getElementById('authPanel').style.display = 'none';
@@ -504,6 +510,7 @@ function handleAuthSubmit() {
             alert("गलत यूजरनेम (मोबाइल नंबर) या पासवर्ड!");
         }
     }
+    // 4. पासवर्ड बदलने का टैब (दो बार पासवर्ड वेरिफिकेशन)
     else if (activeTab === 'changePass') {
         if (confirmPass === "") {
             alert("कृपया नया पासवर्ड बॉक्स भी भरें!");
@@ -631,13 +638,8 @@ function openLink() {
         }
     }
     
-    // ======= सिर्फ यही 2 lines बदली हैं — URL छुपाने के लिए =======
     var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
-    var newWin = window.open('', 'CertificatePrintWindow', windowFeatures);
-    newWin.document.open();
-    newWin.document.write('<!DOCTYPE html><html><head><title>Certificate Print</title><style>*{margin:0;padding:0;}iframe{width:100vw;height:100vh;border:none;display:block;}</style></head><body><iframe src="' + finalUrl + '"></iframe></body></html>');
-    newWin.document.close();
-    // =============================================================
+    window.open(finalUrl, 'CertificatePrintWindow', windowFeatures);
 }
 
 // ================= सुरक्षा प्रतिबंध =================
