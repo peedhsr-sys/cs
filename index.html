@@ -22,6 +22,7 @@ body {
     box-sizing: border-box;
 }
 
+/* Glassmorphism Box */
 .box {
     background: rgba(20, 20, 20, 0.45);
     backdrop-filter: blur(20px);
@@ -36,6 +37,7 @@ body {
     overflow: hidden;
 }
 
+/* User/Apple Icon Profile Image */
 .profile-img {
     width: 80px;
     height: 80px;
@@ -53,6 +55,7 @@ h2, h3 {
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+/* Apple Sleek Inputs */
 input, select {
     width: 90%;
     padding: 14px 20px;
@@ -69,7 +72,9 @@ input, select {
     backdrop-filter: blur(10px);
 }
 
-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
 
 input:focus, select:focus {
     border: 1px solid #0a84ff;
@@ -77,8 +82,12 @@ input:focus, select:focus {
     background: rgba(0, 0, 0, 0.5);
 }
 
-select option { background: #1c1c1e; color: #fff; }
+select option {
+    background: #1c1c1e;
+    color: #fff;
+}
 
+/* MacOS Style Buttons */
 button {
     padding: 14px 30px;
     font-size: 16px;
@@ -99,7 +108,9 @@ button:hover:not(:disabled) {
     box-shadow: 0 6px 20px rgba(10, 132, 255, 0.6);
 }
 
-button:active:not(:disabled) { transform: translateY(1px); }
+button:active:not(:disabled) {
+    transform: translateY(1px);
+}
 
 button:disabled {
     background: rgba(255, 255, 255, 0.1);
@@ -109,6 +120,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
+/* Logout Red Apple Button */
 .logout-btn {
     background: linear-gradient(180deg, #ff453a 0%, #d70015 100%);
     position: absolute;
@@ -120,8 +132,11 @@ button:disabled {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(255, 69, 58, 0.3);
 }
-.logout-btn:hover { box-shadow: 0 6px 15px rgba(255, 69, 58, 0.5); }
+.logout-btn:hover {
+    box-shadow: 0 6px 15px rgba(255, 69, 58, 0.5);
+}
 
+/* MacOS Control Center Style Timer */
 .session-timer {
     position: absolute;
     top: 20px;
@@ -136,6 +151,7 @@ button:disabled {
     backdrop-filter: blur(10px);
 }
 
+/* Segmented Control Tabs (MacOS Style) */
 .nav-tabs {
     display: flex;
     justify-content: center;
@@ -157,7 +173,10 @@ button:disabled {
     color: rgba(255,255,255,0.7);
     transition: all 0.3s ease;
 }
-.nav-tabs span:hover { color: #fff; background: rgba(255,255,255,0.1); }
+.nav-tabs span:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
 .nav-tabs span.active {
     background: rgba(255,255,255,0.15);
     color: #fff;
@@ -165,6 +184,7 @@ button:disabled {
     border: 1px solid rgba(255,255,255,0.2);
 }
 
+/* Glassmorphism List for Admin */
 .list-container {
     text-align: left;
     max-width: 450px;
@@ -183,7 +203,9 @@ button:disabled {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 15px;
 }
-.list-item:last-child { border-bottom: none; }
+.list-item:last-child {
+    border-bottom: none;
+}
 .delete-btn {
     background: rgba(255, 69, 58, 0.2);
     color: #ff453a;
@@ -199,6 +221,7 @@ button:disabled {
     box-shadow: 0 2px 8px rgba(255, 69, 58, 0.3);
 }
 
+/* Context Menu */
 #custom-menu {
     display: none;
     position: absolute;
@@ -214,6 +237,7 @@ button:disabled {
     backdrop-filter: blur(10px);
 }
 
+/* ================= NEW MAC STYLE FULL HD ADMIN HEADER ================= */
 .mac-admin-header {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
     border: 1px solid rgba(255, 255, 255, 0.25);
@@ -248,55 +272,30 @@ button:disabled {
     letter-spacing: 1px;
     box-shadow: 0 0 12px rgba(0, 102, 204, 0.6);
 }
-
-/* ================= PROCESSING OVERLAY ================= */
-#processingOverlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(20px);
-    z-index: 9999999;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    color: #fff;
-}
-.spinner {
-    width: 60px; height: 60px;
-    border: 5px solid rgba(255,255,255,0.1);
-    border-top-color: #0a84ff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-bottom: 25px;
-}
-@keyframes spin { 100% { transform: rotate(360deg); } }
 </style>
 </head>
 
 <body>
 
-<!-- Processing Overlay -->
-<div id="processingOverlay">
-    <div class="spinner"></div>
-    <h3 style="margin:0; letter-spacing:2px; font-size:20px;">🔒 SECURE CONNECTION ESTABLISHING...</h3>
-    <p style="opacity:0.6; font-size:14px; margin-top:12px;">Fetching Original Certificate from Server</p>
-</div>
-
 <div id="custom-menu">सुरक्षा के कारण यह विकल्प बंद है।</div>
 
 <div id="authPanel" class="box">
+    
     <div class="nav-tabs">
         <span id="tabLogin" class="active" onclick="switchAuthTab('login')">Login</span>
         <span id="tabRegister" onclick="switchAuthTab('register')">New Registration</span>
         <span id="tabAdmin" onclick="switchAuthTab('admin')">Admin Login</span>
         <span id="tabChangePass" onclick="switchAuthTab('changePass')" style="color: #ffd60a;">Change Password</span>
     </div>
+
     <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile" class="profile-img">
+
     <h3 id="authTitle">User Login</h3>
+    
     <input type="text" id="authUsername" placeholder="Enter Username (Mobile No or 'admin')">
     <input type="password" id="authPassword" placeholder="Enter Password">
     <input type="password" id="authConfirmPassword" placeholder="Confirm Password" style="display: none;">
+    
     <br>
     <button onclick="handleAuthSubmit()">Submit</button>
 </div>
@@ -304,14 +303,18 @@ button:disabled {
 <div id="adminPanel" class="box" style="display: none;">
     <div class="session-timer" id="adminTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
+
     <div class="mac-admin-header">
         <span class="mac-badge">macOS System Control</span>
         <h2>Admin Dashboard Control Center</h2>
     </div>
+    
     <p style="color: rgba(255,255,255,0.7); font-size: 14px;">यहाँ से अधिकतम 20 मोबाइल नंबर जोड़ें, केवल वही लोग नया रजिस्ट्रेशन कर पाएंगे।</p>
+    
     <input type="text" id="newAllowedMobile" placeholder="Enter Mobile Number to Authorize">
     <br>
     <button onclick="addMobileToWhitelist()">Add Mobile Number</button>
+    
     <div class="list-container">
         <strong style="color: #0a84ff;">Authorized Mobile Numbers (<span id="currentCount">0</span>/20):</strong>
         <div id="whitelistDisplay" style="margin-top: 15px;"></div>
@@ -321,15 +324,18 @@ button:disabled {
 <div id="mainPortal" class="box" style="display: none;">
     <div class="session-timer" id="portalTimer">Session: 05:00</div>
     <button class="logout-btn" onclick="logout()">Logout</button>
+
     <img src="https://cdn-icons-png.flaticon.com/512/2912/2912301.png" alt="Portal" class="profile-img" style="margin-top: 30px;">
     <h2>Direct Original Certificate Print</h2>
     <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 25px;">(For All Districts of Uttar Pradesh)</p>
+
     <select id="portalType" onchange="validateForm()">
         <option value="">-- पोर्टल चुनें / Select Portal --</option>
         <option value="edistrict">e-District Portal</option>
         <option value="ecitizen">e-Citizen (e-Sathi) Portal</option>
     </select>
     <br>
+
     <select id="certType" onchange="validateForm()">
         <option value="">-- प्रमाणपत्र चुनें / Select Certificate --</option>
         <option value="aay">आय प्रमाणपत्र (Income Certificate)</option>
@@ -337,8 +343,10 @@ button:disabled {
         <option value="niwas">निवास प्रमाणपत्र (Domicile Certificate)</option>
     </select>
     <br>
+
     <input type="text" id="appno" placeholder="Enter Application Number" oninput="validateForm()">
     <br>
+    
     <button id="confirmBtn" onclick="openLink()" disabled>Confirm & Open Link</button>
 </div>
 
@@ -346,27 +354,35 @@ button:disabled {
 var activeTab = 'login';
 var countdownInterval; 
 
+// ================= टाइमर लॉजिक =================
 function startSessionTimer() {
     clearInterval(countdownInterval); 
+    
     var sessionEndTime = Date.now() + 300000; 
+
     document.getElementById('adminTimer').innerText = "Session: 05:00";
     document.getElementById('portalTimer').innerText = "Session: 05:00";
+
     countdownInterval = setInterval(function() {
         var timeLeft = Math.floor((sessionEndTime - Date.now()) / 1000);
+
         if (timeLeft <= 0) {
             clearInterval(countdownInterval);
             logout();
-            alert("Session Expired! 5 मिनट पूरे हो गए हैं।");
+            alert("Session Expired! 5 मिनट पूरे हो गए हैं। आपको ऑटोमैटिक लॉगआउट कर दिया गया है।");
             return;
         }
+
         var min = Math.floor(timeLeft / 60);
         var sec = timeLeft % 60;
         var formattedTime = (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
+        
         document.getElementById('adminTimer').innerText = "Session: " + formattedTime;
         document.getElementById('portalTimer').innerText = "Session: " + formattedTime;
     }, 1000); 
 }
 
+// ================= TABS SWITCHING LOGIC =================
 function switchAuthTab(tab) {
     activeTab = tab;
     document.getElementById('tabLogin').className = (tab === 'login') ? 'active' : '';
@@ -412,6 +428,7 @@ function switchAuthTab(tab) {
     }
 }
 
+// ================= LOGIN, REGISTRATION & PASSWORD LOGIC =================
 function handleAuthSubmit() {
     var mobileOrUser = document.getElementById('authUsername').value.trim();
     var pass = document.getElementById('authPassword').value.trim();
@@ -424,6 +441,7 @@ function handleAuthSubmit() {
 
     var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
     var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+    
     var currentAdminPass = localStorage.getItem('adminPassword') || 'Abcd@6769';
 
     if (activeTab === 'admin') {
@@ -437,11 +455,23 @@ function handleAuthSubmit() {
         }
     } 
     else if (activeTab === 'register') {
-        if (confirmPass === "") { alert("कृपया कन्फर्म पासवर्ड भी भरें!"); return; }
-        if (pass !== confirmPass) { alert("दोनों पासवर्ड आपस में मेल नहीं खा रहे हैं!"); return; }
-        if (!whitelist.includes(mobileOrUser)) { alert("यह मोबाइल नंबर एडमिन द्वारा लिस्ट में नहीं जोड़ा गया है।"); return; }
-        if (users.some(function(u) { return u.username === mobileOrUser; })) { alert("यह मोबाइल नंबर पहले से रजिस्टर्ड है!"); return; }
-        
+        if (confirmPass === "") {
+            alert("कृपया कन्फर्म पासवर्ड भी भरें!");
+            return;
+        }
+        if (pass !== confirmPass) {
+            alert("दोनों पासवर्ड आपस में मेल नहीं खा रहे हैं! कृपया सही डालें।");
+            return;
+        }
+        if (!whitelist.includes(mobileOrUser)) {
+            alert("यह मोबाइल नंबर एडमिन द्वारा लिस्ट में नहीं जोड़ा गया है। आप रजिस्ट्रेशन नहीं कर सकते!");
+            return;
+        }
+        var userExists = users.some(function(u) { return u.username === mobileOrUser; });
+        if (userExists) {
+            alert("यह मोबाइल नंबर पहले से रजिस्टर्ड है! कृपया सीधे लॉगिन करें।");
+            return;
+        }
         users.push({ username: mobileOrUser, password: pass });
         localStorage.setItem('registeredUsers', JSON.stringify(users));
         alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
@@ -460,7 +490,10 @@ function handleAuthSubmit() {
         var foundUser = users.find(function(u) { return u.username === mobileOrUser && u.password === pass; });
         
         if (foundUser) {
-            if (!whitelist.includes(mobileOrUser)) { alert("एडमिन ने आपका नंबर लिस्ट से हटा दिया है!"); return; }
+            if (!whitelist.includes(mobileOrUser)) {
+                alert("एडमिन ने आपका नंबर लिस्ट से हटा दिया है! अब आप लॉगिन नहीं कर सकते।");
+                return;
+            }
             
             document.getElementById('authPanel').style.display = 'none';
             document.getElementById('mainPortal').style.display = 'block';
@@ -472,12 +505,15 @@ function handleAuthSubmit() {
         }
     }
     else if (activeTab === 'changePass') {
-        if (confirmPass === "") { alert("कृपया नया पासवर्ड बॉक्स भी भरें!"); return; }
+        if (confirmPass === "") {
+            alert("कृपया नया पासवर्ड बॉक्स भी भरें!");
+            return;
+        }
 
         if (mobileOrUser === 'admin') {
             if (pass === currentAdminPass) {
                 localStorage.setItem('adminPassword', confirmPass);
-                alert("एडमिन पासवर्ड सफलतापूर्वक बदल दिया गया है!");
+                alert("एडमिन पासवर्ड सफलतापूर्वक बदल दिया गया है! अब नए पासवर्ड से लॉगिन करें।");
                 switchAuthTab('admin'); 
             } else {
                 alert("एडमिन का पुराना पासवर्ड गलत है!");
@@ -489,27 +525,33 @@ function handleAuthSubmit() {
                 if (users[userIndex].password === pass) {
                     users[userIndex].password = confirmPass;
                     localStorage.setItem('registeredUsers', JSON.stringify(users));
-                    alert("आपका पासवर्ड सफलतापूर्वक बदल दिया गया है!");
+                    alert("आपका पासवर्ड सफलतापूर्वक बदल दिया गया है! अब नए पासवर्ड से लॉगिन करें।");
                     switchAuthTab('login'); 
                 } else {
                     alert("पुराना पासवर्ड गलत है!");
                 }
             } else {
-                alert("यह यूजरनेम रजिस्टर्ड नहीं है!");
+                alert("यह यूजरनेम (मोबाइल नंबर) रजिस्टर्ड नहीं है!");
             }
         }
     }
 }
 
+// ================= ADMIN DASHBOARD FUNCTIONS =================
 function addMobileToWhitelist() {
     var mobileInput = document.getElementById('newAllowedMobile');
     var mobileNo = mobileInput.value.trim();
     if (mobileNo === "") return;
 
     var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
-    if (whitelist.includes(mobileNo)) { alert("यह मोबाइल नंबर पहले से लिस्ट में मौजूद है!"); return; }
-    if (whitelist.length >= 20) { alert("सीमा समाप्त! अधिकतम 20 नंबर।"); return; }
-    
+    if (whitelist.includes(mobileNo)) {
+        alert("यह मोबाइल नंबर पहले से लिस्ट में मौजूद है!");
+        return;
+    }
+    if (whitelist.length >= 20) {
+        alert("सीमा समाप्त! आप अधिकतम 20 मोबाइल नंबर ही जोड़ सकते हैं।");
+        return;
+    }
     whitelist.push(mobileNo);
     localStorage.setItem('allowedMobiles', JSON.stringify(whitelist));
     mobileInput.value = '';
@@ -546,6 +588,7 @@ function logout() {
     switchAuthTab('login');
 }
 
+// ================= प्रिंट फंक्शन कोड =================
 function validateForm() {
     var portalType = document.getElementById('portalType').value;
     var certType = document.getElementById('certType').value;
@@ -570,33 +613,34 @@ function openLink() {
     var finalUrl = "";
     
     if (portalType === "edistrict") {
-        if (certType === "jati") finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
-        else if (certType === "aay") finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
-        else if (certType === "niwas") finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+        if (certType === "jati") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "aay") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "niwas") {
+            finalUrl = "https://edistrict.up.gov.in/eDistrict/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+        }
     } 
     else if (portalType === "ecitizen") {
-        if (certType === "jati") finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
-        else if (certType === "aay") finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
-        else if (certType === "niwas") finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+        if (certType === "jati") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Caste/Forms/printCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "aay") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/INCOME/Forms/printIncomeCert.aspx?application_no=" + encodedAppNo;
+        } else if (certType === "niwas") {
+            finalUrl = "https://esathi.up.gov.in/citizenservices/ServiceEdist/Certificate/Domicile/Forms/printDomCert.aspx?application_no=" + encodedAppNo;
+        }
     }
     
-    var overlay = document.getElementById('processingOverlay');
-    overlay.style.display = 'flex';
-    
-    // Open link immediately, but keep overlay for 1.5 seconds for a premium feel
+    // ======= सिर्फ यही 2 lines बदली हैं — URL छुपाने के लिए =======
     var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
-    var newWin = window.open(finalUrl, 'CertificatePrintWindow', windowFeatures);
-    
-    setTimeout(function() {
-        overlay.style.display = 'none';
-    }, 1500);
-    
-    if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
-        alert("Pop-up Blocker ON hai. Kripya browser settings me pop-up allow karein.");
-        overlay.style.display = 'none';
-    }
+    var newWin = window.open('', 'CertificatePrintWindow', windowFeatures);
+    newWin.document.open();
+    newWin.document.write('<!DOCTYPE html><html><head><title>Certificate Print</title><style>*{margin:0;padding:0;}iframe{width:100vw;height:100vh;border:none;display:block;}</style></head><body><iframe src="' + finalUrl + '"></iframe></body></html>');
+    newWin.document.close();
+    // =============================================================
 }
 
+// ================= सुरक्षा प्रतिबंध =================
 (function() {
     var allowedDomain = "peedhsr-sys.github.io";
     var currentHost = window.location.hostname;
@@ -612,23 +656,35 @@ function openLink() {
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         e.stopPropagation();
+        
         menu.style.left = e.pageX + 'px';
         menu.style.top = e.pageY + 'px';
         menu.style.display = 'block';
-        setTimeout(function() { menu.style.display = 'none'; }, 2000);
+        
+        setTimeout(function() {
+            menu.style.display = 'none';
+        }, 2000);
     }, true);
 
-    document.addEventListener('click', function() { menu.style.display = 'none'; });
+    document.addEventListener('click', function() {
+        menu.style.display = 'none';
+    });
 
     document.addEventListener('keydown', function(e) {
-        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+        if (
+            e.keyCode === 123 || 
+            (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || 
+            (e.ctrlKey && e.keyCode === 85) 
+        ) {
             e.stopPropagation();
             e.preventDefault();
             return false;
         }
     }, true);
 
-    setInterval(function() { debugger; }, 100);
+    setInterval(function() {
+        debugger;
+    }, 100);
 })();
 </script>
 
