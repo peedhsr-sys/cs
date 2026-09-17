@@ -638,12 +638,12 @@ function openLink() {
         }
     }
     
-    var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
-    
-    // लिंक को छुपाने के लिए iframe वाली नई ब्लैंक विंडो खोली गई है
-    var printWindow = window.open('', 'CertificatePrintWindow', windowFeatures);
-    printWindow.document.write('<html><head><title>Certificate Print</title></head><body style="margin:0;padding:0;overflow:hidden;"><iframe src="' + finalUrl + '" style="width:100%;height:100vh;border:none;"></iframe></body></html>');
-    printWindow.document.close();
+    // Original link ko hide karne ke liye about:blank window me iframe ka use kiya gaya hai
+    var newWin = window.open('about:blank', 'CertificatePrintWindow', 'width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no');
+    if (newWin) {
+        newWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Certificate Print</title><style>body,html{margin:0;padding:0;height:100%;overflow:hidden;background:#fff;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src="' + finalUrl + '" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe></body></html>');
+        newWin.document.close();
+    }
 }
 
 // ================= सुरक्षा प्रतिबंध =================
