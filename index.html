@@ -347,7 +347,7 @@ button:disabled {
     <input type="text" id="appno" placeholder="Enter Application Number" oninput="validateForm()">
     <br>
     
-    <button id="confirmBtn" onclick="openLink()" disabled>Confirm & Download</button>
+    <button id="confirmBtn" onclick="openLink()" disabled>Confirm & Open Link</button>
 </div>
 
 <script>
@@ -595,7 +595,7 @@ function logout() {
     switchAuthTab('login');
 }
 
-// ================= प्रिंट व डायरेक्ट डाउनलोड कोड =================
+// ================= प्रिंट फंक्शन कोड =================
 function validateForm() {
     var portalType = document.getElementById('portalType').value;
     var certType = document.getElementById('certType').value;
@@ -638,13 +638,16 @@ function openLink() {
         }
     }
     
-    var downloadLink = document.createElement('a');
-    downloadLink.href = finalUrl;
-    downloadLink.setAttribute('download', certType + '_' + appNo + '.pdf');
-    downloadLink.style.display = 'none';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    // Original link ko address bar me chhupane ke liye about:blank aur iframe ka use
+    var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
+    var newWin = window.open('about:blank', 'CertificatePrintWindow', windowFeatures);
+    
+    if (newWin) {
+        var iframeHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body,html{margin:0;padding:0;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src="' + finalUrl + '" allow="fullscreen"></iframe></body></html>';
+        newWin.document.open();
+        newWin.document.write(iframeHtml);
+        newWin.document.close();
+    }
 }
 
 // ================= सुरक्षा प्रतिबंध =================
