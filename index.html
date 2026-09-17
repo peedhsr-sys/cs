@@ -401,14 +401,12 @@ function switchAuthTab(tab) {
     document.getElementById('authPassword').value = '';
     document.getElementById('authConfirmPassword').value = '';
 
-    // कंडीशन के हिसाब से कन्फर्म पासवर्ड का बॉक्स दिखाना या छुपाना
     if (tab === 'register' || tab === 'changePass') {
         document.getElementById('authConfirmPassword').style.display = 'inline-block';
     } else {
         document.getElementById('authConfirmPassword').style.display = 'none';
     }
     
-    // प्लेसहोल्डर और टाइटल्स सेट करना
     if (tab === 'login') {
         document.getElementById('authTitle').innerText = 'User Login';
         document.getElementById('authUsername').placeholder = 'Enter Username (Mobile No or admin)';
@@ -443,11 +441,8 @@ function handleAuthSubmit() {
 
     var whitelist = JSON.parse(localStorage.getItem('allowedMobiles')) || [];
     var users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-    
-    // एडमिन का डिफ़ॉल्ट पासवर्ड आपकी पसंद के अनुसार Abcd@6769 सेट किया गया है
     var currentAdminPass = localStorage.getItem('adminPassword') || 'Abcd@6769';
 
-    // 1. एडमिन लॉगिन टैब
     if (activeTab === 'admin') {
         if (mobileOrUser === 'admin' && pass === currentAdminPass) {
             document.getElementById('authPanel').style.display = 'none';
@@ -458,7 +453,6 @@ function handleAuthSubmit() {
             alert("गलत एडमिन यूजरनेम या पासवर्ड!");
         }
     } 
-    // 2. नया रजिस्ट्रेशन टैब (दो बार पासवर्ड चेक करने के साथ)
     else if (activeTab === 'register') {
         if (confirmPass === "") {
             alert("कृपया कन्फर्म पासवर्ड भी भरें!");
@@ -482,7 +476,6 @@ function handleAuthSubmit() {
         alert("रजिस्ट्रेशन सफल रहा! अब लॉगिन करें।");
         switchAuthTab('login');
     } 
-    // 3. लॉगिन टैब
     else if (activeTab === 'login') {
         if (mobileOrUser === 'admin' && pass === currentAdminPass) {
             document.getElementById('authPanel').style.display = 'none';
@@ -510,7 +503,6 @@ function handleAuthSubmit() {
             alert("गलत यूजरनेम (मोबाइल नंबर) या पासवर्ड!");
         }
     }
-    // 4. पासवर्ड बदलने का टैब (दो बार पासवर्ड वेरिफिकेशन)
     else if (activeTab === 'changePass') {
         if (confirmPass === "") {
             alert("कृपया नया पासवर्ड बॉक्स भी भरें!");
@@ -638,15 +630,23 @@ function openLink() {
         }
     }
     
-    // Original link ko address bar me chhupane ke liye about:blank aur iframe ka use
     var windowFeatures = "width=1000,height=750,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no,directories=no";
-    var newWin = window.open('about:blank', 'CertificatePrintWindow', windowFeatures);
+    
+    // ADVANCED METHOD: Blob URL to mask the origin (Maximum possible client-side hiding)
+    var htmlContent = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Certificate</title><style>body,html{margin:0;padding:0;height:100%;overflow:hidden;background:#fff;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src="' + finalUrl + '" allow="fullscreen" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation"></iframe></body></html>';
+    
+    var blob = new Blob([htmlContent], { type: 'text/html' });
+    var blobUrl = URL.createObjectURL(blob);
+    
+    var newWin = window.open(blobUrl, 'CertificatePrintWindow', windowFeatures);
     
     if (newWin) {
-        var iframeHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body,html{margin:0;padding:0;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src="' + finalUrl + '" allow="fullscreen"></iframe></body></html>';
-        newWin.document.open();
-        newWin.document.write(iframeHtml);
-        newWin.document.close();
+        // Clean up the blob URL after 5 seconds to save memory
+        setTimeout(function() {
+            URL.revokeObjectURL(blobUrl);
+        }, 5000);
+    } else {
+        alert("Pop-up blocker ने विंडो को ब्लॉक कर दिया है। कृपया ब्राउज़र सेटिंग्स में pop-up allow करें।");
     }
 }
 
